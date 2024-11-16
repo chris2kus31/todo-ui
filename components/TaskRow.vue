@@ -1,11 +1,8 @@
 <!-- components/TaskRow.vue -->
 <template>
   <div class="task-row">
-    <!-- Separate div for checkbox to keep it independent from task text -->
-    <div class="task-checkbox-container">
-      <input type="checkbox" class="task-checkbox" v-model="completed" />
-      <span class="custom-checkbox"></span>
-    </div>
+    <!-- Directly styled checkbox to keep it independent from task text -->
+    <input type="checkbox" class="task-checkbox" v-model="completed" />
 
     <!-- Task text, click to edit -->
     <span
@@ -42,10 +39,11 @@ const completed = ref(false);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
 
-const enableEditing = () => {
-  // Only activate edit mode if not completed
+const enableEditing = async () => {
   if (!completed.value) {
     isEditing.value = true;
+    await nextTick(); // Wait for the DOM update
+    document.querySelector(".task-input").focus(); // Focus the input
   }
 };
 
@@ -93,45 +91,39 @@ function saveName() {
   cursor: pointer;
 }
 .task-checkbox-container {
-  display: flex;
-  align-items: center;
-  margin-right: 10px; /* Adjusts space between checkbox and input */
+  position: relative;
 }
 .task-checkbox {
-  display: none;
-}
-.custom-checkbox {
-  width: 16px;
-  height: 16px;
+  appearance: none;
+  width: 18px;
+  height: 18px;
   border: 2px solid #f26b5e;
   border-radius: 4px;
-  display: inline-block;
-  position: relative;
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+  position: relative;
 }
-.task-checkbox:checked + .custom-checkbox {
+.task-checkbox:checked {
   background-color: #f26b5e;
   border-color: #f26b5e;
 }
-.task-checkbox:checked + .custom-checkbox::after {
+
+.task-checkbox:checked::after {
   content: "";
   position: absolute;
-  left: 4px;
-  top: 0px;
+  left: 3px; /* Center horizontally */
   width: 6px;
-  height: 12px;
+  height: 10px;
   border: solid white;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
 .task-text {
   color: white;
   font-size: 1em;
   transition: color 0.3s ease;
-}
-.task-checkbox:checked ~ .task-text {
-  color: #a9a9a9;
-  text-decoration: line-through;
+  margin-left: 10px;
 }
 .task-input {
   background-color: #3d4552;
@@ -140,6 +132,7 @@ function saveName() {
   padding: 5px;
   border-radius: 4px;
   width: 100%;
+  margin-left: 10px; /* Adds spacing from the checkbox */
 }
 .completed-task {
   color: #a9a9a9;
