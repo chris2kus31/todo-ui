@@ -1,28 +1,58 @@
 <!-- components/TodoCard.vue -->
 <template>
-  <div class="todo-card">
-    <header class="todo-header">
-      <h1 class="todo-title">Todo</h1>
-      <button class="add-button" @click="addTask">+</button>
-    </header>
-    <!-- Render TaskRow components for each task in the tasks array -->
-    <TaskRow v-for="task in tasks" :key="task.id" :taskText="task.text" />
-  </div>
-</template>
+    <div class="todo-card">
+      <header class="todo-header">
+        <h1 class="todo-title">Todo</h1>
+        <button class="add-button" @click="addTask">+</button>
+      </header>
+  
+      <!-- Render TaskRow components for each task in the tasks array -->
+      <TaskRow
+        v-for="task in tasks"
+        :key="task.id"
+        :taskText="task.text || ''" 
+        :isEditing="task.isEditing"
+        @onSave="(newName) => saveTask(task, newName)"
+      />
+    </div>
+  </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 import TaskRow from "~/components/TaskRow.vue";
 
-const tasks = ref([])
+const tasks = ref([]);
+let taskIdCounter = 1;
 
-let taskIdCounter = 1
-function addTask() {
+const addTask = () => {
   tasks.value.push({
     id: taskIdCounter++,
-    text: `Task ${taskIdCounter}`
-  })
-}
+    text: "", // Ensure text is initialized to an empty string
+    isEditing: true,
+  });
+};
+
+const saveTask = (task, newName) => {
+  if (newName) {  // Check that newName is defined before updating
+    task.text = newName;
+  }
+  task.isEditing = false;
+
+  fakeApiCall({ name: task.text })
+    .then((response) => {
+      console.log("Task saved:", response);
+    })
+    .catch((error) => console.error("Failed to save task:", error));
+};
+
+// Mock API call
+const fakeApiCall = (payload) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true, data: payload });
+    }, 500);
+  });
+};
 </script>
 
 <style scoped>

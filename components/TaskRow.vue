@@ -1,88 +1,111 @@
 <!-- components/TaskRow.vue -->
 <template>
-    <div class="task-row">
-      <label class="task-label">
-        <input type="checkbox" class="task-checkbox" v-model="completed" />
-        <span class="custom-checkbox"></span>
-        <span class="task-text">{{ taskText }}</span>
-      </label>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref, defineProps } from 'vue'
-  
-  // Define props
-  const props = defineProps({
-    taskText: {
-      type: String,
-      required: true
-    },
-    initialCompleted: {
-      type: Boolean,
-      default: false
+  <div class="task-row">
+    <label class="task-label" v-if="!isEditing">
+      <input type="checkbox" class="task-checkbox" v-model="completed" />
+      <span class="custom-checkbox"></span>
+      <span class="task-text">{{ taskText }}</span>
+    </label>
+    <input
+      v-else
+      v-model="taskName"
+      class="task-input"
+      @keyup.enter="saveName"
+      @blur="saveName"
+      placeholder="Name your task"
+    />
+  </div>
+</template>
+
+<script setup>
+import { ref, defineProps, defineEmits, watch } from "vue";
+
+const props = defineProps({
+  taskText: { type: String, required: true, default: "" }, // Ensure taskText has a default value
+  isEditing: { type: Boolean, default: false },
+});
+
+const emits = defineEmits(["onSave"]);
+
+const completed = ref(false);
+const taskName = ref(props.taskText);
+
+watch(
+  () => props.taskText,
+  (newVal) => {
+    if (newVal !== undefined) {
+      taskName.value = newVal;
     }
-  })
-  
-  // Manage the task completion state
-  const completed = ref(props.initialCompleted)
-  </script>
-  
-  <style scoped>
-  .task-row {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-    background-color: #4b5563;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
   }
-  .task-row:hover {
-    background-color: #454e59; /* Slightly darker background on hover */
-  }
-  .task-label {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Space between checkbox and text */
-    cursor: pointer;
-  }
-  .task-checkbox {
-    display: none; /* Hide default checkbox */
-  }
-  .custom-checkbox {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #f26b5e; /* Action color */
-    border-radius: 4px;
-    display: inline-block;
-    position: relative;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
-  .task-checkbox:checked + .custom-checkbox {
-    background-color: #f26b5e; /* Filled background for checked state */
-    border-color: #f26b5e;
-  }
-  .task-checkbox:checked + .custom-checkbox::after {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: 0px;
-    width: 6px;
-    height: 12px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-  .task-text {
-    color: white;
-    font-size: 1em;
-    transition: color 0.3s ease;
-  }
-  .task-checkbox:checked ~ .task-text {
-    color: #a9a9a9; /* Dimmed text color when checked */
-    text-decoration: line-through; /* Strikethrough on completion */
-  }
-  </style>
-  
+);
+
+function saveName() {
+  emits("onSave", taskName.value.trim() || "Unnamed Task"); // Avoid empty values
+}
+</script>
+
+<style scoped>
+.task-row {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  background-color: #4b5563;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+.task-row:hover {
+  background-color: #454e59;
+}
+.task-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.task-checkbox {
+  display: none;
+}
+.custom-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f26b5e;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.task-checkbox:checked + .custom-checkbox {
+  background-color: #f26b5e;
+  border-color: #f26b5e;
+}
+.task-checkbox:checked + .custom-checkbox::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.task-text {
+  color: white;
+  font-size: 1em;
+  transition: color 0.3s ease;
+}
+.task-checkbox:checked ~ .task-text {
+  color: #a9a9a9;
+  text-decoration: line-through;
+}
+.task-input {
+  background-color: #3d4552;
+  color: white;
+  border: 1px solid #f26b5e;
+  padding: 5px;
+  border-radius: 4px;
+  width: 100%;
+}
+</style>
