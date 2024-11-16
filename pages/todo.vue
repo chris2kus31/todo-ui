@@ -15,6 +15,7 @@
           <h2 class="card-title">Created</h2>
         </div>
       </div>
+      
       <!-- Row with todo-card -->
       <div class="todo-card">
         <header class="todo-header">
