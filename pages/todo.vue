@@ -25,22 +25,15 @@
           </label>
         </div>
       </div>
-      
+
       <div class="analytics-card">
-          <h2 class="card-title">Graph Analytics</h2>
-        </div>
+        <h2 class="card-title">Graph Analytics</h2>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.analytics-card {
-  background-color: #3D4552; /* Matches other cards */
-  padding: 20px;
-  border-radius: 8px;
-  color: white;
-  text-align: center;
-}
 .page-wrapper {
   display: flex;
   justify-content: center;
@@ -155,5 +148,12 @@
 .task-checkbox:checked ~ .task-text {
   color: #a9a9a9; /* Dimmed text color when checked */
   text-decoration: line-through; /* Strikethrough on completion */
+}
+.analytics-card {
+  background-color: #3d4552; /* Matches other cards */
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  text-align: center;
 }
 </style>
