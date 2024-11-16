@@ -1,6 +1,11 @@
 <template>
   <div class="page-wrapper">
     <div class="todo-container">
+      <!-- New actions bar -->
+      <div class="actions-bar">
+        <button class="filter-button">🔍</button>
+      </div>
+      
       <!-- Row with two cards -->
       <div class="top-row">
         <div class="top-card">
@@ -155,5 +160,20 @@
   border-radius: 8px;
   color: white;
   text-align: center;
+}
+.actions-bar {
+  display: flex;
+  justify-content: flex-end; /* Align filter icon to the right */
+  margin-bottom: 10px; /* Space between actions bar and top-row */
+}
+.filter-button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2em;
+  color: white;
+  cursor: pointer;
+}
+.filter-button:hover {
+  opacity: 0.8;
 }
 </style>
