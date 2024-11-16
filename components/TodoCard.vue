@@ -1,21 +1,21 @@
 <!-- components/TodoCard.vue -->
 <template>
-    <div class="todo-card">
-      <header class="todo-header">
-        <h1 class="todo-title">Todo</h1>
-        <button class="add-button" @click="addTask">+</button>
-      </header>
-  
-      <!-- Render TaskRow components for each task in the tasks array -->
-      <TaskRow
-        v-for="task in tasks"
-        :key="task.id"
-        :taskText="task.text || ''" 
-        :isEditing="task.isEditing"
-        @onSave="(newName) => saveTask(task, newName)"
-      />
-    </div>
-  </template>
+  <div class="todo-card">
+    <header class="todo-header">
+      <h1 class="todo-title">Todo</h1>
+      <button class="add-button" @click="addTask">+</button>
+    </header>
+
+    <!-- Render TaskRow components for each task in the tasks array -->
+    <TaskRow
+      v-for="task in tasks"
+      :key="task.id"
+      :taskText="task.text || ''"
+      :isEditing="task.isEditing"
+      @onSave="(newName) => saveTask(task, newName)"
+    />
+  </div>
+</template>
 
 <script setup>
 import { ref } from "vue";
@@ -33,7 +33,8 @@ const addTask = () => {
 };
 
 const saveTask = (task, newName) => {
-  if (newName) {  // Check that newName is defined before updating
+  if (newName) {
+    // Check that newName is defined before updating
     task.text = newName;
   }
   task.isEditing = false;
