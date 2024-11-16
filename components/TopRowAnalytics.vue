@@ -3,12 +3,24 @@
   <div class="top-row">
     <div class="top-card">
       <h2 class="card-title">Completed</h2>
+      <div class="card-content">
+        <CheckCircleIcon class="card-icon" />
+        <span class="card-number">42</span>
+      </div>
     </div>
     <div class="top-card">
       <h2 class="card-title">Created</h2>
+      <div class="card-content">
+        <PlusCircleIcon class="card-icon" />
+        <span class="card-number">58</span>
+      </div>
     </div>
   </div>
 </template>
+
+<script>
+import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
+</script>
 
 <style scoped>
 .top-row {
