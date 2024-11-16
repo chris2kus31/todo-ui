@@ -13,6 +13,7 @@
       :taskText="task.text || ''"
       :isEditing="task.isEditing"
       @onSave="(newName) => saveTask(task, newName)"
+      @cancelTask="() => cancelTask(task)"
     />
   </div>
 </template>
@@ -24,11 +25,24 @@ import TaskRow from "~/components/TaskRow.vue";
 const tasks = ref([]);
 let taskIdCounter = 1;
 
+const cancelTask = (task) => {
+  if (!task.text) {
+    tasks.value = tasks.value.filter((t) => t.id !== task.id);
+  }
+};
+
 const addTask = () => {
   tasks.value.push({
     id: taskIdCounter++,
-    text: "", // Ensure text is initialized to an empty string
+    text: "",
     isEditing: true,
+  });
+
+  nextTick(() => {
+    const taskRows = document.querySelectorAll('.task-input');
+    if (taskRows.length) {
+      taskRows[taskRows.length - 1].focus();
+    }
   });
 };
 

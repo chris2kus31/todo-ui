@@ -11,7 +11,7 @@
       v-model="taskName"
       class="task-input"
       @keyup.enter="saveName"
-      @blur="saveName"
+      @blur="cancelOrSave"
       placeholder="Name your task"
     />
   </div>
@@ -25,10 +25,18 @@ const props = defineProps({
   isEditing: { type: Boolean, default: false },
 });
 
-const emits = defineEmits(["onSave"]);
+const emits = defineEmits(["onSave", "cancelTask"]);
 
 const completed = ref(false);
 const taskName = ref(props.taskText);
+
+function cancelOrSave() {
+  if (taskName.value.trim()) {
+    saveName();
+  } else {
+    emits("cancelTask");
+  }
+}
 
 watch(
   () => props.taskText,
