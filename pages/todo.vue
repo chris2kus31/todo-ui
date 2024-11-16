@@ -24,12 +24,11 @@
             <span class="task-text">Sample Task</span>
           </label>
         </div>
-
-        <div class="analytics-card">
+      </div>
+      
+      <div class="analytics-card">
           <h2 class="card-title">Graph Analytics</h2>
         </div>
-        
-      </div>
     </div>
   </div>
 </template>
