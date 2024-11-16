@@ -1,25 +1,28 @@
 <template>
-    <div class="todo-container">
-      <div class="todo-widget">
-        Hello world
+    <div class="page-wrapper">
+      <div class="todo-container">
+        <!-- Content goes here -->
       </div>
     </div>
   </template>
   
   <style scoped>
-  .todo-container {
+  .page-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
   }
   
-  .todo-widget {
+  .todo-container {
+    background-color: #313743;
+    border-radius: 12px;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: center;
-    background-color: #f9f9f9;
+    width: 500px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   </style>
   
