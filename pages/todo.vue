@@ -45,5 +45,15 @@
   font-size: 1.5em;
   color: white;
 }
+.add-button {
+  background-color: #F26B5E;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2em;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
   </style>
   
