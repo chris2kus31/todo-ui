@@ -4,7 +4,7 @@
         <div class="todo-card">
           <header class="todo-header">
             <h1 class="todo-title">Todo</h1>
-            <button>+</button>
+            <button class="add-button">+</button>
           </header>
       </div>
       </div>
@@ -54,6 +54,9 @@
   width: 32px;
   height: 32px;
   cursor: pointer;
+}
+.add-button:hover {
+  opacity: 0.9;
 }
   </style>
   
