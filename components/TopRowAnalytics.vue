@@ -45,13 +45,12 @@ import { CheckCircleIcon, DocumentPlusIcon } from "@heroicons/vue/24/solid";
   color: white;
   margin: 0;
 }
-
 .card-content {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between; /* Space between icon and card-info */
+  width: 100%; /* Ensure content takes full width for spacing */
 }
-
 .card-icon {
   width: 32px;
   height: 32px;
@@ -60,9 +59,8 @@ import { CheckCircleIcon, DocumentPlusIcon } from "@heroicons/vue/24/solid";
 .card-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end; /* Align text to the right */
 }
-
 .card-number {
   font-size: 1.5em;
   font-weight: bold;
