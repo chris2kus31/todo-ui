@@ -14,6 +14,7 @@
         <span class="task-text">Sample Task</span>
       </label>
     </div>
+    
   </div>
 </template>
 
@@ -24,18 +25,15 @@
   border-radius: 8px;
   color: white;
 }
-
 .todo-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .todo-title {
   font-size: 1.5em;
   color: white;
 }
-
 .add-button {
   background-color: #f26b5e;
   border: none;
@@ -49,8 +47,6 @@
 .add-button:hover {
   opacity: 0.9;
 }
-
-/* Original task-row styles */
 .task-row {
   display: flex;
   align-items: center;
@@ -58,7 +54,7 @@
   padding: 12px;
   border-radius: 8px;
   transition: background-color 0.3s ease;
-  background-color: #4b5563; /* Subtle background color for separation */
+  background-color: #4b5563;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
 }
 .task-row:hover {
