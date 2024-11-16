@@ -5,13 +5,10 @@
       <ActionBar />
       <!-- Row with two cards -->
       <TopRowAnalytics />
-
       <!-- Row with todo-card -->
       <TodoCard />
-
-      <div class="analytics-card">
-        <h2 class="card-title">Graph Analytics</h2>
-      </div>
+      <!-- Row with Graph -->
+      <AnalyticsGraph />
     </div>
   </div>
 </template>
@@ -20,6 +17,7 @@
 import ActionBar from "~/components/ActionBar.vue";
 import TopRowAnalytics from "~/components/TopRowAnalytics.vue";
 import TodoCard from "~/components/TodoCard.vue";
+import AnalyticsGraph from "~/components/AnalyticsGraph.vue";
 import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
 </script>
 
@@ -44,12 +42,5 @@ import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
 .card-title {
   font-size: 1.2em;
   color: white;
-}
-.analytics-card {
-  background-color: #3d4552; /* Matches other cards */
-  padding: 20px;
-  border-radius: 8px;
-  color: white;
-  text-align: center;
 }
 </style>

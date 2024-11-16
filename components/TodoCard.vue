@@ -32,7 +32,7 @@
 }
 
 .todo-title {
-    font-size: 1.5em;
+  font-size: 1.5em;
   color: white;
 }
 
