@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
+import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
 </script>
 
 <style scoped>
@@ -37,6 +37,25 @@ import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
 }
 .card-title {
   font-size: 1.2em;
+  color: white;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-icon {
+  width: 32px;
+  height: 32px;
+  color: #f26b5e; /* Highlight color for icons */
+}
+
+.card-number {
+  font-size: 2em;
+  font-weight: bold;
   color: white;
 }
 </style>
