@@ -2,9 +2,7 @@
   <div class="page-wrapper">
     <div class="todo-container">
       <!-- New actions bar -->
-      <div class="actions-bar">
-        <AdjustmentsHorizontalIcon class="filter-icon" />
-      </div>
+      <ActionBar />
 
       <!-- Row with two cards -->
       <div class="top-row">
@@ -15,7 +13,7 @@
           <h2 class="card-title">Created</h2>
         </div>
       </div>
-      
+
       <!-- Row with todo-card -->
       <div class="todo-card">
         <header class="todo-header">
@@ -40,6 +38,7 @@
 </template>
 
 <script setup>
+import ActionBar from '~/components/ActionBar.vue'
 import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
 </script>
 
@@ -165,19 +164,5 @@ import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
   border-radius: 8px;
   color: white;
   text-align: center;
-}
-.actions-bar {
-  display: flex;
-  justify-content: flex-end; /* Align filter icon to the right */
-  margin-bottom: 10px; /* Space between actions bar and top-row */
-}
-.filter-icon {
-  width: 24px;
-  height: 24px;
-  color: white;
-  cursor: pointer;
-}
-.filter-icon:hover {
-  opacity: 0.8;
 }
 </style>
