@@ -3,7 +3,7 @@
     <div class="todo-container">
       <!-- New actions bar -->
       <div class="actions-bar">
-        <AdjustmentsHorizontalIcon class="filter-icon"/>
+        <AdjustmentsHorizontalIcon class="filter-icon" />
       </div>
 
       <!-- Row with two cards -->
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { AdjustmentsHorizontalIcon } from '@heroicons/vue/24/solid'
+import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
 </script>
 
 <style scoped>
