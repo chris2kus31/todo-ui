@@ -3,15 +3,26 @@
   <div class="todo-card">
     <header class="todo-header">
       <h1 class="todo-title">Todo</h1>
-      <button class="add-button">+</button>
+      <button class="add-button" @click="addTask">+</button>
     </header>
-    <!-- Task Row -->
-    <TaskRow taskText="Sample Task" />
+    <!-- Render TaskRow components for each task in the tasks array -->
+    <TaskRow v-for="task in tasks" :key="task.id" :taskText="task.text" />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import TaskRow from "~/components/TaskRow.vue";
+
+const tasks = ref([])
+
+let taskIdCounter = 1
+function addTask() {
+  tasks.value.push({
+    id: taskIdCounter++,
+    text: `Task ${taskIdCounter}`
+  })
+}
 </script>
 
 <style scoped>
