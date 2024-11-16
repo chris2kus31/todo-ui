@@ -2,8 +2,8 @@
     <div class="page-wrapper">
       <div class="todo-container">
         <div class="todo-card">
-          <header>
-            
+          <header class="todo-header">
+
           </header>
       </div>
       </div>
@@ -34,6 +34,10 @@
   border-radius: 8px;
   width: 100%;
   color: white;
+}
+.todo-header {
+  display: flex;
+
 }
   </style>
   
