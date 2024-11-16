@@ -3,7 +3,7 @@
       <div class="todo-container">
         <div class="todo-card">
           <header class="todo-header">
-            <h1>Todo</h1>
+            <h1 class="todo-title">Todo</h1>
             <button>+</button>
           </header>
       </div>
@@ -40,6 +40,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.todo-title {
+  font-size: 1.5em;
+  color: white;
 }
   </style>
   
