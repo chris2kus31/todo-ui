@@ -24,12 +24,24 @@
             <span class="task-text">Sample Task</span>
           </label>
         </div>
+
+        <div class="analytics-card">
+          <h2 class="card-title">Graph Analytics</h2>
+        </div>
+        
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.analytics-card {
+  background-color: #3D4552; /* Matches other cards */
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  text-align: center;
+}
 .page-wrapper {
   display: flex;
   justify-content: center;
