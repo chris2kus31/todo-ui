@@ -3,9 +3,9 @@
     <div class="todo-container">
       <!-- New actions bar -->
       <div class="actions-bar">
-        <button class="filter-button">🔍</button>
+        <AdjustmentsHorizontalIcon class="filter-icon"/>
       </div>
-      
+
       <!-- Row with two cards -->
       <div class="top-row">
         <div class="top-card">
@@ -37,6 +37,10 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { AdjustmentsHorizontalIcon } from '@heroicons/vue/24/solid'
+</script>
 
 <style scoped>
 .page-wrapper {
@@ -166,14 +170,13 @@
   justify-content: flex-end; /* Align filter icon to the right */
   margin-bottom: 10px; /* Space between actions bar and top-row */
 }
-.filter-button {
-  background-color: transparent;
-  border: none;
-  font-size: 1.2em;
+.filter-icon {
+  width: 24px;
+  height: 24px;
   color: white;
   cursor: pointer;
 }
-.filter-button:hover {
+.filter-icon:hover {
   opacity: 0.8;
 }
 </style>
