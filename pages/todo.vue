@@ -4,6 +4,7 @@
         <div class="todo-card">
           <header class="todo-header">
             <h1>Todo</h1>
+            <button>+</button>
           </header>
       </div>
       </div>
