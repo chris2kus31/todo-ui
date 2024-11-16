@@ -1,17 +1,20 @@
 <!-- components/TaskRow.vue -->
 <template>
   <div class="task-row">
-    <!-- Checkbox and task name -->
-    <label class="task-label">
+    <!-- Separate div for checkbox to keep it independent from task text -->
+    <div class="task-checkbox-container">
       <input type="checkbox" class="task-checkbox" v-model="completed" />
       <span class="custom-checkbox"></span>
-      <span
-        :class="{ 'task-text': true, 'completed-task': completed }"
-        @click="enableEditing"
-      >
-        {{ taskName }}
-      </span>
-    </label>
+    </div>
+
+    <!-- Task text, click to edit -->
+    <span
+      v-if="!isEditing"
+      :class="{ 'task-text': true, 'completed-task': completed }"
+      @click="enableEditing"
+    >
+      {{ taskName }}
+    </span>
 
     <!-- Input for editing task name -->
     <input
@@ -34,6 +37,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["onSave", "cancelTask"]);
+
 const completed = ref(false);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
@@ -85,8 +89,13 @@ function saveName() {
 .task-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 10px; /* Adjusts spacing between checkbox and task text */
   cursor: pointer;
+}
+.task-checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Adjusts space between checkbox and input */
 }
 .task-checkbox {
   display: none;
