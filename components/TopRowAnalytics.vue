@@ -2,24 +2,28 @@
 <template>
   <div class="top-row">
     <div class="top-card">
-      <h2 class="card-title">Completed</h2>
       <div class="card-content">
         <CheckCircleIcon class="card-icon" />
-        <span class="card-number">42</span>
+        <div class="card-info">
+          <h2 class="card-title">Completed</h2>
+          <span class="card-number">42</span>
+        </div>
       </div>
     </div>
     <div class="top-card">
-      <h2 class="card-title">Created</h2>
       <div class="card-content">
-        <PlusCircleIcon class="card-icon" />
-        <span class="card-number">58</span>
+        <DocumentPlusIcon class="card-icon" />
+        <div class="card-info">
+          <h2 class="card-title">Created</h2>
+          <span class="card-number">58</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
+<script setup>
+import { CheckCircleIcon, DocumentPlusIcon } from "@heroicons/vue/24/solid";
 </script>
 
 <style scoped>
@@ -30,31 +34,37 @@ import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
 }
 .top-card {
   background-color: #3d4552;
-  padding: 10px;
+  padding: 15px;
   border-radius: 8px;
   flex: 1;
-  text-align: center;
+  display: flex;
+  align-items: center;
 }
 .card-title {
-  font-size: 1.2em;
+  font-size: 1em;
   color: white;
+  margin: 0;
 }
 
 .card-content {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
 }
 
 .card-icon {
   width: 32px;
   height: 32px;
-  color: #f26b5e; /* Highlight color for icons */
+  color: #f26b5e;
+}
+.card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .card-number {
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: bold;
   color: white;
 }
