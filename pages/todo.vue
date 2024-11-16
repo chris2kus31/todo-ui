@@ -1,16 +1,6 @@
 <template>
   <div class="page-wrapper">
-    <div class="todo-container">
-
-        <div class="top-row">
-        <div class="top-card">
-          <h2 class="card-title">Completed</h2>
-        </div>
-        <div class="top-card">
-          <h2 class="card-title">Created</h2>
-        </div>
-      </div>
-      
+    <div class="todo-container">      
       <div class="todo-card">
         <header class="todo-header">
           <h1 class="todo-title">Todo</h1>
