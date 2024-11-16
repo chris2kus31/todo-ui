@@ -1,36 +1,36 @@
 <template>
-    <div class="page-wrapper">
-      <div class="todo-container">
-        <div class="todo-card">
-          <header class="todo-header">
-            <h1 class="todo-title">Todo</h1>
-            <button class="add-button">+</button>
-          </header>
-      </div>
+  <div class="page-wrapper">
+    <div class="todo-container">
+      <div class="todo-card">
+        <header class="todo-header">
+          <h1 class="todo-title">Todo</h1>
+          <button class="add-button">+</button>
+        </header>
       </div>
     </div>
-  </template>
-  
-  <style scoped>
-  .page-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-  
-  .todo-container {
-    background-color: #313743;
-    border-radius: 12px;
-    padding: 20px;
-    width: 500px;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .todo-card {
-  background-color: #3D4552;
+  </div>
+</template>
+
+<style scoped>
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.todo-container {
+  background-color: #313743;
+  border-radius: 12px;
+  padding: 20px;
+  width: 500px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.todo-card {
+  background-color: #3d4552;
   padding: 20px;
   border-radius: 8px;
   width: 100%;
@@ -46,7 +46,7 @@
   color: white;
 }
 .add-button {
-  background-color: #F26B5E;
+  background-color: #f26b5e;
   border: none;
   border-radius: 50%;
   color: white;
@@ -58,5 +58,4 @@
 .add-button:hover {
   opacity: 0.9;
 }
-  </style>
-  
+</style>
