@@ -3,16 +3,8 @@
     <div class="todo-container">
       <!-- New actions bar -->
       <ActionBar />
-
       <!-- Row with two cards -->
-      <div class="top-row">
-        <div class="top-card">
-          <h2 class="card-title">Completed</h2>
-        </div>
-        <div class="top-card">
-          <h2 class="card-title">Created</h2>
-        </div>
-      </div>
+      <TopRowAnalytics />
 
       <!-- Row with todo-card -->
       <div class="todo-card">
@@ -39,6 +31,7 @@
 
 <script setup>
 import ActionBar from '~/components/ActionBar.vue'
+import TopRowAnalytics from '~/components/TopRowAnalytics.vue'
 import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
 </script>
 
@@ -87,18 +80,6 @@ import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
 }
 .add-button:hover {
   opacity: 0.9;
-}
-.top-card {
-  background-color: #3d4552;
-  padding: 10px;
-  border-radius: 8px;
-  flex: 1; /* Allows each card to take up equal width in the row */
-  text-align: center;
-}
-.top-row {
-  display: flex;
-  gap: 10px; /* Space between the two cards */
-  margin-bottom: 20px; /* Space between the row and the main to-do card */
 }
 .card-title {
   font-size: 1.2em;
