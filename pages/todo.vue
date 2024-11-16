@@ -1,7 +1,9 @@
 <template>
     <div class="page-wrapper">
       <div class="todo-container">
-        <!-- Content goes here -->
+        <div class="todo-card">
+       
+      </div>
       </div>
     </div>
   </template>
@@ -24,5 +26,12 @@
     justify-content: center;
     align-items: center;
   }
+  .todo-card {
+  background-color: #3D4552;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  color: white;
+}
   </style>
   
