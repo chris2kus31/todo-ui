@@ -1,13 +1,21 @@
 <!-- components/TaskRow.vue -->
 <template>
   <div class="task-row">
-    <label class="task-label" v-if="!isEditing">
+    <!-- Checkbox and task name -->
+    <label class="task-label">
       <input type="checkbox" class="task-checkbox" v-model="completed" />
       <span class="custom-checkbox"></span>
-      <span class="task-text">{{ taskText }}</span>
+      <span
+        :class="{ 'task-text': true, 'completed-task': completed }"
+        @click="enableEditing"
+      >
+        {{ taskName }}
+      </span>
     </label>
+
+    <!-- Input for editing task name -->
     <input
-      v-else
+      v-if="isEditing"
       v-model="taskName"
       class="task-input"
       @keyup.enter="saveName"
@@ -26,9 +34,16 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["onSave", "cancelTask"]);
-
 const completed = ref(false);
+const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
+
+const enableEditing = () => {
+  // Only activate edit mode if not completed
+  if (!completed.value) {
+    isEditing.value = true;
+  }
+};
 
 function cancelOrSave() {
   if (taskName.value.trim()) {
@@ -48,7 +63,8 @@ watch(
 );
 
 function saveName() {
-  emits("onSave", taskName.value.trim() || "Unnamed Task"); // Avoid empty values
+  isEditing.value = false;
+  emits("onSave", taskName.value.trim() || "Unnamed Task");
 }
 </script>
 
@@ -115,5 +131,9 @@ function saveName() {
   padding: 5px;
   border-radius: 4px;
   width: 100%;
+}
+.completed-task {
+  color: #a9a9a9;
+  text-decoration: line-through; /* Strikethrough on completion */
 }
 </style>
