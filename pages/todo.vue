@@ -38,7 +38,7 @@
 }
 .todo-header {
   display: flex;
-
+  justify-content: space-between;
 }
   </style>
   
