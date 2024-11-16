@@ -39,7 +39,7 @@ const addTask = () => {
   });
 
   nextTick(() => {
-    const taskRows = document.querySelectorAll('.task-input');
+    const taskRows = document.querySelectorAll(".task-input");
     if (taskRows.length) {
       taskRows[taskRows.length - 1].focus();
     }
