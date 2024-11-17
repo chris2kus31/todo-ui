@@ -6,7 +6,7 @@
         <CheckCircleIcon class="card-icon" />
         <div class="card-info">
           <h2 class="card-title">Completed</h2>
-          <span class="card-number">42</span>
+          <span class="card-number">{{ analyticsData.completed }}</span>
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@
         <DocumentPlusIcon class="card-icon" />
         <div class="card-info">
           <h2 class="card-title">Created</h2>
-          <span class="card-number">58</span>
+          <span class="card-number">{{ analyticsData.created }}</span>
         </div>
       </div>
     </div>
@@ -24,6 +24,10 @@
 
 <script setup>
 import { CheckCircleIcon, DocumentPlusIcon } from "@heroicons/vue/24/solid";
+import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
+
+
+const { analyticsData } = useTopRowAnalytics();
 </script>
 
 <style scoped>

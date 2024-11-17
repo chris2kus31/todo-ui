@@ -1,36 +1,60 @@
-<!-- components/ActionBar.vue -->
 <template>
   <div class="actions-bar">
-    <button class="filter-button">
-      <AdjustmentsHorizontalIcon class="filter-icon" />
-    </button>
+    <!-- Date Picker for selecting range -->
+    <VueDatePicker v-model="dateRange" range multi-calendars />
   </div>
 </template>
 
 <script setup>
-import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/solid";
+import { ref, watch } from 'vue'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+import { useTopRowAnalytics } from '~/composables/useTopRowAnalytics'
+
+
+const dateRange = ref([])
+const { updateAnalytics } = useTopRowAnalytics()
+
+
+watch(dateRange, async (newRange) => {
+  if (newRange && newRange.length === 2) {
+    const [start, end] = newRange
+    const analyticsData = await fetchAnalytics(start, end)
+    updateAnalytics(analyticsData) 
+  }
+})
+
+
+async function fetchAnalytics(startDate, endDate) {
+  console.log(`Fetching analytics from ${startDate} to ${endDate}`)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ created: Math.floor(Math.random() * 10), completed: Math.floor(Math.random() * 10) })
+    }, 500)
+  })
+}
+
+
+const formatDate = (date) => {
+  return date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+}
 </script>
 
 <style scoped>
 .actions-bar {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
   margin-bottom: 10px;
 }
 
-.filter-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+.date-display {
+  margin-left: 10px;
 }
 
-.filter-icon {
-  width: 24px;
-  height: 24px;
+.date-range-text {
+  background-color: #3d4552;
   color: white;
-}
-
-.filter-button:hover .filter-icon {
-  opacity: 0.8;
+  padding: 5px 10px;
+  border-radius: 4px;
 }
 </style>

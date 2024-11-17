@@ -1,27 +1,29 @@
-<!-- components/AnalyticsGraph.vue -->
 <template>
   <div class="analytics-card">
     <h2 class="card-title">Graph Analytics</h2>
-    <BarChart :chartData="data" :options="options" />
+    <BarChart :chartData="chartData" :options="options" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed } from "vue";
+import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
 import BarChart from "~/components/BarChart.vue";
 
-const data = ref({
-  labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+const { analyticsData } = useTopRowAnalytics();
+
+const chartData = computed(() => ({
+  labels: ["Created", "Completed"],
   datasets: [
     {
-      label: "Tasks Completed",
-      backgroundColor: "#B2D198",
-      data: [10, 20, 30, 40, 50],
+      label: "Tasks",
+      backgroundColor: ["#B2D198", "#F26B5E"],
+      data: [analyticsData.value.created, analyticsData.value.completed],
     },
   ],
-});
+}));
 
-const options = ref({
+const options = {
   responsive: true,
   plugins: {
     legend: {
@@ -30,10 +32,10 @@ const options = ref({
     },
     title: {
       display: true,
-      text: "Task Completion Over Time",
+      text: "Task Analytics",
     },
   },
-});
+};
 </script>
 
 <style scoped>
