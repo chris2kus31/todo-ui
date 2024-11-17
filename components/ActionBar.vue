@@ -10,37 +10,25 @@ import { ref, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
-import { useAxios } from '~/composables/useAxios';
+import { useAxios } from "~/composables/useAxios";
 
-
-const { fetchAnalyticsData } = useTopRowAnalytics()
+const { fetchAnalyticsData } = useTopRowAnalytics();
 const axios = useAxios();
 
-const startDate = new Date()
-const endDate = new Date()
-endDate.setDate(startDate.getDate() + 7)
-const dateRange = ref([startDate, endDate])
+const startDate = new Date();
+const endDate = new Date();
+endDate.setDate(startDate.getDate() + 7);
+const dateRange = ref([startDate, endDate]);
 
-watch(dateRange, ([start, end]) => {
-  if (start && end) {
-    fetchAnalyticsData(start, end)
-  }
-}, { immediate: true })
-
-// async function fetchAnalyticsData(startDate, endDate) {console.log('accessing')
-//   try {
-//     const response = await axios.get('/api/analytics', {
-//       params: {
-//         from: startDate.toISOString().split('T')[0],
-//         to: endDate.toISOString().split('T')[0],
-//       },
-//     })
-//     const analyticsData = response.data
-//     updateAnalytics(analyticsData)
-//   } catch (error) {
-//     console.error("Error fetching analytics data:", error)
-//   }
-// }
+watch(
+  dateRange,
+  ([start, end]) => {
+    if (start && end) {
+      fetchAnalyticsData(start, end);
+    }
+  },
+  { immediate: true }
+);
 
 const formatDate = (date) => {
   return date
