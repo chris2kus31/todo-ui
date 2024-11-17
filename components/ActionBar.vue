@@ -10,41 +10,37 @@ import { ref, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
+import { useAxios } from '~/composables/useAxios';
 
-const dateRange = ref([]);
-const { updateAnalytics } = useTopRowAnalytics();
 
-// Initialize the date range to the next 7 days on load
-onMounted(() => {
-  const startDate = new Date();
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 7);
-  dateRange.value = [startDate, endDate];
-});
+const { fetchAnalyticsData } = useTopRowAnalytics()
+const axios = useAxios();
 
-watch(
-  dateRange,
-  async (newRange) => {
-    if (newRange && newRange.length === 2) {
-      const [start, end] = newRange;
-      const analyticsData = await fetchAnalytics(start, end);
-      updateAnalytics(analyticsData);
-    }
-  },
-  { immediate: true }
-);
+const startDate = new Date()
+const endDate = new Date()
+endDate.setDate(startDate.getDate() + 7)
+const dateRange = ref([startDate, endDate])
 
-async function fetchAnalytics(startDate, endDate) {
-  console.log(`Fetching analytics from ${startDate} to ${endDate}`);
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        created: Math.floor(Math.random() * 10),
-        completed: Math.floor(Math.random() * 10),
-      });
-    }, 500);
-  });
-}
+watch(dateRange, ([start, end]) => {
+  if (start && end) {
+    fetchAnalyticsData(start, end)
+  }
+}, { immediate: true })
+
+// async function fetchAnalyticsData(startDate, endDate) {console.log('accessing')
+//   try {
+//     const response = await axios.get('/api/analytics', {
+//       params: {
+//         from: startDate.toISOString().split('T')[0],
+//         to: endDate.toISOString().split('T')[0],
+//       },
+//     })
+//     const analyticsData = response.data
+//     updateAnalytics(analyticsData)
+//   } catch (error) {
+//     console.error("Error fetching analytics data:", error)
+//   }
+// }
 
 const formatDate = (date) => {
   return date

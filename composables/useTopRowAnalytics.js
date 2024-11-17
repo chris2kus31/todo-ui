@@ -1,5 +1,6 @@
 // composables/useTopRowAnalytics.js
 import { ref } from 'vue'
+import { useAxios } from '~/composables/useAxios'
 
 const analyticsData = ref({
   created: 0,
@@ -7,12 +8,25 @@ const analyticsData = ref({
 })
 
 export function useTopRowAnalytics() {
-  const updateAnalytics = (data) => {
-    analyticsData.value = data
+  const axios = useAxios()  // Get the pre-configured Axios instance
+
+  async function fetchAnalyticsData(startDate, endDate) {
+    try {
+      const response = await axios.get('/api/analytics', {
+        params: {
+          from: startDate.toISOString().split('T')[0],
+          to: endDate.toISOString().split('T')[0],
+        },
+      })
+      analyticsData.value = response.data
+      console.log('Fetched analytics data:', analyticsData.value)
+    } catch (error) {
+      console.error('Error fetching analytics data:', error)
+    }
   }
 
   return {
     analyticsData,
-    updateAnalytics,
+    fetchAnalyticsData,
   }
 }
