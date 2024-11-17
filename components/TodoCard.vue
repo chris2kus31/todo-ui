@@ -21,8 +21,10 @@
 <script setup>
 import { ref } from "vue";
 import TaskRow from "~/components/TaskRow.vue";
+import { useAxios } from '~/composables/useAxios';
 
 const tasks = ref([]);
+const axios = useAxios();
 let taskIdCounter = 1;
 
 const cancelTask = (task) => {
