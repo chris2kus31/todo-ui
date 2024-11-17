@@ -6,38 +6,55 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import VueDatePicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
-import { useTopRowAnalytics } from '~/composables/useTopRowAnalytics'
+import { ref, watch } from "vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
 
+const dateRange = ref([]);
+const { updateAnalytics } = useTopRowAnalytics();
 
-const dateRange = ref([])
-const { updateAnalytics } = useTopRowAnalytics()
+// Initialize the date range to the next 7 days on load
+onMounted(() => {
+  const startDate = new Date();
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 7);
+  dateRange.value = [startDate, endDate];
+});
 
-
-watch(dateRange, async (newRange) => {
-  if (newRange && newRange.length === 2) {
-    const [start, end] = newRange
-    const analyticsData = await fetchAnalytics(start, end)
-    updateAnalytics(analyticsData) 
-  }
-})
-
+watch(
+  dateRange,
+  async (newRange) => {
+    if (newRange && newRange.length === 2) {
+      const [start, end] = newRange;
+      const analyticsData = await fetchAnalytics(start, end);
+      updateAnalytics(analyticsData);
+    }
+  },
+  { immediate: true }
+);
 
 async function fetchAnalytics(startDate, endDate) {
-  console.log(`Fetching analytics from ${startDate} to ${endDate}`)
+  console.log(`Fetching analytics from ${startDate} to ${endDate}`);
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ created: Math.floor(Math.random() * 10), completed: Math.floor(Math.random() * 10) })
-    }, 500)
-  })
+      resolve({
+        created: Math.floor(Math.random() * 10),
+        completed: Math.floor(Math.random() * 10),
+      });
+    }, 500);
+  });
 }
-
 
 const formatDate = (date) => {
-  return date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
-}
+  return date
+    ? date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "";
+};
 </script>
 
 <style scoped>

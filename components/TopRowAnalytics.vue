@@ -26,7 +26,6 @@
 import { CheckCircleIcon, DocumentPlusIcon } from "@heroicons/vue/24/solid";
 import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
 
-
 const { analyticsData } = useTopRowAnalytics();
 </script>
 
