@@ -13,7 +13,6 @@
     "@heroicons/vue": "^2.1.5",
     "chart.js": "^4.4.6",
     "nuxt": "^3.14.159",
-    "v-calendar": "^3.1.2",
     "vue": "latest",
     "vue-chartjs": "^5.3.2",
     "vue-router": "latest"
