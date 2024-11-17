@@ -22,6 +22,10 @@
       @blur="cancelOrSave"
       placeholder="Name your task"
     />
+    <!-- Delete button, visible only when the task is completed -->
+    <button v-if="completed" @click="deleteTask" class="delete-button">
+      Delete
+    </button>
   </div>
 </template>
 
@@ -68,6 +72,15 @@ function saveName() {
   isEditing.value = false;
   emits("onSave", taskName.value.trim() || "Unnamed Task");
 }
+
+const fakeApiDeleteCall = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Task deleted");
+      resolve();
+    }, 500);
+  });
+};
 </script>
 
 <style scoped>
@@ -137,5 +150,19 @@ function saveName() {
 .completed-task {
   color: #a9a9a9;
   text-decoration: line-through; /* Strikethrough on completion */
+}
+.delete-button {
+  background-color: #f26b5e;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #d5584d;
 }
 </style>
