@@ -51,10 +51,8 @@ const taskName = ref(props.taskText);
 
 async function completeTask() {
   try {
-    await axios.patch(`/api/todos/${props.taskId}`, {
-      name: taskName.value,
-      status: 1,
-    });
+    await axios.patch(`/api/todos/${props.taskId}`, { name: taskName.value, status: 1 });
+    emits("onComplete"); // Emit event to refresh tasks in TodoCard
     completed.value = true;
   } catch (error) {
     console.error("Failed to complete task:", error);
@@ -89,7 +87,7 @@ watch(
 async function deleteTask() {
   try {
     await axios.delete(`/api/todos/${props.taskId}`);
-    emits("onDelete", props.taskId);
+    emits("onDelete"); // Emit event to refresh tasks in TodoCard
   } catch (error) {
     console.error("Failed to delete task:", error);
   }

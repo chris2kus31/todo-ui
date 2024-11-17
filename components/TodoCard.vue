@@ -15,6 +15,8 @@
       :taskId="task.id"
       @onSave="(newName) => saveTask(task, newName)"
       @cancelTask="() => cancelTask(task)"
+      @onDelete="fetchTasks" 
+      @onComplete="fetchTasks" 
     />
   </div>
 </template>
@@ -28,20 +30,23 @@ const tasks = ref([]);
 const axios = useAxios();
 let taskIdCounter = 1;
 
-
-onMounted(async () => {
+async function fetchTasks() {
   try {
     const response = await axios.get('/api/todos');
-    tasks.value = response.data.data.map(task => ({
-      id: task.id,
-      text: task.name,
-      isEditing: false,
-      completed: task.status === 1
-    }));
+    tasks.value = response.data.data
+      .filter(task => task.status === 0) // Only include incomplete tasks
+      .map(task => ({
+        id: task.id,
+        text: task.name,
+        isEditing: false,
+        completed: task.status === 1
+      }));
   } catch (error) {
     console.error("Error fetching tasks:", error);
   }
-});
+}
+
+onMounted(fetchTasks);
 
 const cancelTask = (task) => {
   if (!task.text) {
@@ -50,14 +55,15 @@ const cancelTask = (task) => {
 };
 
 const addTask = async () => {
-  const newTask = { id: null, text: "", isEditing: true, completed: false };
+  const newTask = { id: taskIdCounter++, text: "", isEditing: true, completed: false };
   tasks.value.push(newTask);
 
   try {
     const response = await axios.post('/api/todos', { name: "New Task" });
     newTask.id = response.data.id;
     newTask.text = response.data.name;
-    
+    newTask.isEditing = false;
+
     await nextTick(() => {
       const taskRows = document.querySelectorAll(".task-input");
       if (taskRows.length) {
@@ -66,7 +72,7 @@ const addTask = async () => {
     });
   } catch (error) {
     console.error("Failed to add task:", error);
-    tasks.value.pop();
+    tasks.value = tasks.value.filter(task => task.id !== newTask.id); // Remove task if adding fails
   }
 };
 
