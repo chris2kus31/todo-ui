@@ -69,22 +69,32 @@ const addTask = () => {
 };
 
 const saveTask = async (task, newName) => {
-  if (savingTask.value) return; // Prevent double calls
-  savingTask.value = true;
+  if (task.text.trim() === newName.trim()) {
+    task.isEditing = false;
+    return;
+  }
 
   task.text = newName;
   task.isEditing = false;
 
-  if (task.id) {
+  if (!task.id) {
+    try {
+      const response = await axios.post('/api/todos', { name: newName });
+      task.id = response.data.id;
+      task.text = response.data.name;
+    } catch (error) {
+      console.error("Failed to add task:", error);
+      tasks.value = tasks.value.filter((t) => t !== task); 
+    }
+  } else {
     try {
       await axios.put(`/api/todos/${task.id}`, { name: newName, status: task.completed ? 1 : 0 });
     } catch (error) {
       console.error("Failed to update task:", error);
     }
   }
-
-  savingTask.value = false; // Reset flag after completion
 };
+
 </script>
 
 <style scoped>
