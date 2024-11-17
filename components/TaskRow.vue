@@ -23,6 +23,9 @@
       @blur="cancelOrSave"
       placeholder="Name your task"
     />
+    <button v-if="completed" @click="completeTask" class="complete-button">
+      Complete
+    </button>
     <!-- Delete button, visible only when the task is completed -->
     <button v-if="completed" @click="deleteTask" class="delete-button">
       Delete
@@ -32,12 +35,12 @@
 
 <script setup>
 import { ref, defineProps, defineEmits, watch } from "vue";
-import { useAxios } from '~/composables/useAxios';
+import { useAxios } from "~/composables/useAxios";
 
 const props = defineProps({
   taskText: { type: String, required: true, default: "" },
   isEditing: { type: Boolean, default: false },
-  taskId: { type: Number, required: true } 
+  taskId: { type: Number, required: true },
 });
 const axios = useAxios();
 const emits = defineEmits(["onSave", "cancelTask", "deleteTask"]);
@@ -45,6 +48,18 @@ const emits = defineEmits(["onSave", "cancelTask", "deleteTask"]);
 const completed = ref(false);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
+
+async function completeTask() {
+  try {
+    await axios.patch(`/api/todos/${props.taskId}`, {
+      name: taskName.value,
+      status: 1,
+    });
+    completed.value = true;
+  } catch (error) {
+    console.error("Failed to complete task:", error);
+  }
+}
 
 const enableEditing = async () => {
   if (!completed.value) {
@@ -74,7 +89,7 @@ watch(
 async function deleteTask() {
   try {
     await axios.delete(`/api/todos/${props.taskId}`);
-    emits("onDelete", props.taskId); 
+    emits("onDelete", props.taskId);
   } catch (error) {
     console.error("Failed to delete task:", error);
   }
@@ -84,15 +99,6 @@ function saveName() {
   isEditing.value = false;
   emits("onSave", taskName.value.trim() || "Unnamed Task");
 }
-
-const fakeApiDeleteCall = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("Task deleted");
-      resolve();
-    }, 500);
-  });
-};
 </script>
 
 <style scoped>
@@ -180,5 +186,19 @@ const fakeApiDeleteCall = () => {
 
 .delete-button:hover {
   background-color: #d5584d;
+}
+.complete-button {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.complete-button:hover {
+  background-color: #45a049;
 }
 </style>
