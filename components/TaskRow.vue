@@ -2,8 +2,9 @@
 <template>
   <div class="task-row">
     <!-- Directly styled checkbox to keep it independent from task text -->
-    <input type="checkbox" class="task-checkbox" v-model="completed" />
-
+    <div class="task-checkbox-container">
+      <input type="checkbox" class="task-checkbox" v-model="completed" />
+    </div>
     <!-- Task text, click to edit -->
     <span
       v-if="!isEditing"
@@ -33,7 +34,7 @@
 import { ref, defineProps, defineEmits, watch } from "vue";
 
 const props = defineProps({
-  taskText: { type: String, required: true, default: "" }, // Ensure taskText has a default value
+  taskText: { type: String, required: true, default: "" },
   isEditing: { type: Boolean, default: false },
 });
 
@@ -46,8 +47,8 @@ const taskName = ref(props.taskText);
 const enableEditing = async () => {
   if (!completed.value) {
     isEditing.value = true;
-    await nextTick(); // Wait for the DOM update
-    document.querySelector(".task-input").focus(); // Focus the input
+    await nextTick();
+    document.querySelector(".task-input").focus();
   }
 };
 
@@ -100,21 +101,24 @@ const fakeApiDeleteCall = () => {
 .task-label {
   display: flex;
   align-items: center;
-  gap: 10px; /* Adjusts spacing between checkbox and task text */
+  gap: 10px;
   cursor: pointer;
 }
 .task-checkbox-container {
-  position: relative;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
 }
 .task-checkbox {
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: 2px solid #f26b5e;
   border-radius: 4px;
   transition: background-color 0.3s ease, border-color 0.3s ease;
   cursor: pointer;
-  position: relative;
 }
 .task-checkbox:checked {
   background-color: #f26b5e;
@@ -124,7 +128,8 @@ const fakeApiDeleteCall = () => {
 .task-checkbox:checked::after {
   content: "";
   position: absolute;
-  left: 3px; /* Center horizontally */
+  left: 3px;
+  top: 1px;
   width: 6px;
   height: 10px;
   border: solid white;
@@ -145,11 +150,11 @@ const fakeApiDeleteCall = () => {
   padding: 5px;
   border-radius: 4px;
   width: 100%;
-  margin-left: 10px; /* Adds spacing from the checkbox */
+  margin-left: 10px;
 }
 .completed-task {
   color: #a9a9a9;
-  text-decoration: line-through; /* Strikethrough on completion */
+  text-decoration: line-through;
 }
 .delete-button {
   background-color: #f26b5e;
