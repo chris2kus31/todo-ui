@@ -40,20 +40,24 @@ import { useAxios } from "~/composables/useAxios";
 const props = defineProps({
   taskText: { type: String, required: true, default: "" },
   isEditing: { type: Boolean, default: false },
-  taskId: { type: Number, required: true },
+  taskId: { type: [Number, null], required: true }, // Accepts Number or null
 });
 const axios = useAxios();
-const emits = defineEmits(["onSave", "cancelTask", "deleteTask"]);
+const emits = defineEmits(["onSave", "cancelTask", "onDelete"]);
 
 const completed = ref(false);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
+let saving = false;
 
 async function completeTask() {
   try {
-    await axios.patch(`/api/todos/${props.taskId}`, { name: taskName.value, status: 1 });
-    emits("onComplete"); // Emit event to refresh tasks in TodoCard
+    await axios.patch(`/api/todos/${props.taskId}`, {
+      name: taskName.value,
+      status: 1,
+    });
     completed.value = true;
+    emits("onDelete", props.taskId); // Emit "onDelete" to trigger removal of the completed task in TodoCard
   } catch (error) {
     console.error("Failed to complete task:", error);
   }
@@ -93,9 +97,12 @@ async function deleteTask() {
   }
 }
 
-function saveName() {
+async function saveName() {
+  if (saving) return; // Prevent double calls
+  saving = true;
   isEditing.value = false;
   emits("onSave", taskName.value.trim() || "Unnamed Task");
+  saving = false;
 }
 </script>
 

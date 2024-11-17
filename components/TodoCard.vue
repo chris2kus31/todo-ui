@@ -29,7 +29,7 @@ import { useAxios } from '~/composables/useAxios';
 const tasks = ref([]);
 const axios = useAxios();
 let taskIdCounter = 1;
-
+const savingTask = ref(false);
 async function fetchTasks() {
   try {
     const response = await axios.get('/api/todos');
@@ -49,34 +49,29 @@ async function fetchTasks() {
 onMounted(fetchTasks);
 
 const cancelTask = (task) => {
-  if (!task.text) {
-    tasks.value = tasks.value.filter((t) => t.id !== task.id);
+  // Only remove the task if it does not have an id (i.e., it's a new task)
+  if (!task.id) {
+    tasks.value = tasks.value.filter((t) => t !== task);
   }
 };
 
-const addTask = async () => {
-  const newTask = { id: taskIdCounter++, text: "", isEditing: true, completed: false };
+const addTask = () => {
+  // Create a temporary new task with isEditing set to true
+  const newTask = { id: null, text: "", isEditing: true, completed: false };
   tasks.value.push(newTask);
 
-  try {
-    const response = await axios.post('/api/todos', { name: "New Task" });
-    newTask.id = response.data.id;
-    newTask.text = response.data.name;
-    newTask.isEditing = false;
-
-    await nextTick(() => {
-      const taskRows = document.querySelectorAll(".task-input");
-      if (taskRows.length) {
-        taskRows[taskRows.length - 1].focus();
-      }
-    });
-  } catch (error) {
-    console.error("Failed to add task:", error);
-    tasks.value = tasks.value.filter(task => task.id !== newTask.id); // Remove task if adding fails
-  }
+  nextTick(() => {
+    const taskRows = document.querySelectorAll(".task-input");
+    if (taskRows.length) {
+      taskRows[taskRows.length - 1].focus();
+    }
+  });
 };
 
 const saveTask = async (task, newName) => {
+  if (savingTask.value) return; // Prevent double calls
+  savingTask.value = true;
+
   task.text = newName;
   task.isEditing = false;
 
@@ -87,6 +82,8 @@ const saveTask = async (task, newName) => {
       console.error("Failed to update task:", error);
     }
   }
+
+  savingTask.value = false; // Reset flag after completion
 };
 </script>
 
