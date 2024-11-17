@@ -12,6 +12,7 @@
       :key="task.id"
       :taskText="task.text || ''"
       :isEditing="task.isEditing"
+      :taskId="task.id"
       @onSave="(newName) => saveTask(task, newName)"
       @cancelTask="() => cancelTask(task)"
     />
@@ -19,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import TaskRow from "~/components/TaskRow.vue";
 import { useAxios } from '~/composables/useAxios';
 
@@ -27,48 +28,59 @@ const tasks = ref([]);
 const axios = useAxios();
 let taskIdCounter = 1;
 
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('/api/todos');
+    tasks.value = response.data.data.map(task => ({
+      id: task.id,
+      text: task.name,
+      isEditing: false,
+      completed: task.status === 1
+    }));
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+  }
+});
+
 const cancelTask = (task) => {
   if (!task.text) {
     tasks.value = tasks.value.filter((t) => t.id !== task.id);
   }
 };
 
-const addTask = () => {
-  tasks.value.push({
-    id: taskIdCounter++,
-    text: "",
-    isEditing: true,
-  });
+const addTask = async () => {
+  const newTask = { id: null, text: "", isEditing: true, completed: false };
+  tasks.value.push(newTask);
 
-  nextTick(() => {
-    const taskRows = document.querySelectorAll(".task-input");
-    if (taskRows.length) {
-      taskRows[taskRows.length - 1].focus();
-    }
-  });
+  try {
+    const response = await axios.post('/api/todos', { name: "New Task" });
+    newTask.id = response.data.id;
+    newTask.text = response.data.name;
+    
+    await nextTick(() => {
+      const taskRows = document.querySelectorAll(".task-input");
+      if (taskRows.length) {
+        taskRows[taskRows.length - 1].focus();
+      }
+    });
+  } catch (error) {
+    console.error("Failed to add task:", error);
+    tasks.value.pop();
+  }
 };
 
-const saveTask = (task, newName) => {
-  if (newName) {
-    // Check that newName is defined before updating
-    task.text = newName;
-  }
+const saveTask = async (task, newName) => {
+  task.text = newName;
   task.isEditing = false;
 
-  fakeApiCall({ name: task.text })
-    .then((response) => {
-      console.log("Task saved:", response);
-    })
-    .catch((error) => console.error("Failed to save task:", error));
-};
-
-// Mock API call
-const fakeApiCall = (payload) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true, data: payload });
-    }, 500);
-  });
+  if (task.id) {
+    try {
+      await axios.put(`/api/todos/${task.id}`, { name: newName, status: task.completed ? 1 : 0 });
+    } catch (error) {
+      console.error("Failed to update task:", error);
+    }
+  }
 };
 </script>
 

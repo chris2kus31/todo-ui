@@ -32,13 +32,15 @@
 
 <script setup>
 import { ref, defineProps, defineEmits, watch } from "vue";
+import { useAxios } from '~/composables/useAxios';
 
 const props = defineProps({
   taskText: { type: String, required: true, default: "" },
   isEditing: { type: Boolean, default: false },
+  taskId: { type: Number, required: true } 
 });
-
-const emits = defineEmits(["onSave", "cancelTask"]);
+const axios = useAxios();
+const emits = defineEmits(["onSave", "cancelTask", "deleteTask"]);
 
 const completed = ref(false);
 const isEditing = ref(props.isEditing);
@@ -68,6 +70,15 @@ watch(
     }
   }
 );
+
+async function deleteTask() {
+  try {
+    await axios.delete(`/api/todos/${props.taskId}`);
+    emits("onDelete", props.taskId); 
+  } catch (error) {
+    console.error("Failed to delete task:", error);
+  }
+}
 
 function saveName() {
   isEditing.value = false;

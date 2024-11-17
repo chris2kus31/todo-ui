@@ -1,6 +1,6 @@
 <!-- components/TopRowAnalytics.vue -->
 <template>
-  <div class="top-row">
+  <div class="top-row" v-if="isLoaded">
     <div class="top-card">
       <div class="card-content">
         <CheckCircleIcon class="card-icon" />
@@ -23,10 +23,17 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
 import { CheckCircleIcon, DocumentPlusIcon } from "@heroicons/vue/24/solid";
 import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
 
 const { analyticsData } = useTopRowAnalytics();
+const isLoaded = ref(false);
+
+onMounted(() => {
+  isLoaded.value = true;
+});
+
 </script>
 
 <style scoped>
