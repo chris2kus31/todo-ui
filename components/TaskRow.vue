@@ -26,13 +26,14 @@
       placeholder="Name your task"
     />
 
-    <button @click="deleteTask" class="trash-button">🗑️</button>
+    <TrashIcon class="trash-icon" @click="deleteTask" />
   </div>
 </template>
 
 <script setup>
 import { ref, defineProps, defineEmits, watch } from "vue";
 import { useAxios } from "~/composables/useAxios";
+import { TrashIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
   taskText: { type: String, required: true, default: "" },
@@ -40,7 +41,6 @@ const props = defineProps({
   taskId: { type: [Number, null], required: true },
   completed: { type: Boolean, default: false }, // Use prop to initialize completed state
 });
-
 
 const axios = useAxios();
 const emits = defineEmits(["onSave", "cancelTask", "onDelete"]);
@@ -207,15 +207,14 @@ async function saveName() {
 .complete-button:hover {
   background-color: #45a049;
 }
-.trash-button {
-  background: transparent;
-  border: none;
+.trash-icon {
+  margin-left: auto;
   color: #f26b5e;
-  font-size: 1.2em;
+  width: 1.25em;
+  height: 1.25em;
   cursor: pointer;
-  margin-left: 10px;
 }
-.trash-button:hover {
+.trash-icon:hover {
   color: #d5584d;
 }
 .task-text {
