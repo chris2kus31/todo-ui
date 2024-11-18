@@ -6,7 +6,7 @@
       <input
         type="text"
         v-model="newTaskText"
-        @keyup.enter="addTask"
+        @keyup.enter="addNewTask"
         placeholder="New task name"
         class="task-input-field"
       />
@@ -21,10 +21,9 @@
       :isEditing="task.isEditing"
       :taskId="task.id"
       :completed="task.completed"
-      @onSave="(newName) => saveTask(task, newName)"
-      @cancelTask="() => cancelTask(task)"
+      @onSave="(newName) => updateTask(task, newName)"
+      @cancelTask="() => removeUnsavedTask(task)"
       @onDelete="fetchTasks"
-      @onComplete="fetchTasks"
       @toggleComplete="updateTaskStatus"
     />
     <!-- See Analytics Button -->
@@ -38,13 +37,10 @@
 import { ref, onMounted } from "vue";
 import TaskRow from "~/components/TaskRow.vue";
 import { useAxios } from "~/composables/useAxios";
-const { fetchAnalyticsData } = useTopRowAnalytics();
 
 const tasks = ref([]);
 const axios = useAxios();
 const newTaskText = ref("");
-
-let taskIdCounter = 1;
 const savingTask = ref(false);
 
 async function fetchTasks() {
@@ -63,14 +59,13 @@ async function fetchTasks() {
 
 onMounted(fetchTasks);
 
-const cancelTask = (task) => {
-  // Only remove the task if it does not have an id (i.e., it's a new task)
+const removeUnsavedTask = (task) => {
   if (!task.id) {
     tasks.value = tasks.value.filter((t) => t !== task);
   }
 };
 
-const addTask = async () => {
+const addNewTask = async () => {
   if (!newTaskText.value.trim()) return;
   try {
     const response = await axios.post("/api/todos", {
@@ -82,14 +77,13 @@ const addTask = async () => {
       isEditing: false,
       completed: false,
     });
-    newTaskText.value = ""; // Clear input field after adding task
-    await fetchAnalyticsData(); // Update analytics data after adding a task
+    newTaskText.value = "";
   } catch (error) {
     console.error("Failed to add task:", error);
   }
 };
 
-const saveTask = async (task, newName) => {
+const updateTask = async (task, newName) => {
   if (task.text.trim() === newName.trim()) {
     task.isEditing = false;
     return;
@@ -123,7 +117,6 @@ function updateTaskStatus(taskId, newStatus) {
   const task = tasks.value.find((task) => task.id === taskId);
   if (task) {
     task.completed = newStatus === 1;
-    fetchAnalyticsData(); // Refresh analytics and graph
   }
 }
 </script>
