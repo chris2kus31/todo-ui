@@ -2,6 +2,10 @@
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
+## Prerequisites
+
+Node.js - v18.0.0 or newer
+
 ## Setup
 
 Make sure to install dependencies:
@@ -18,6 +22,14 @@ yarn install
 
 # bun
 bun install
+```
+
+# env
+```
+cp .env.example .env 
+```
+```
+add api url NUXT_PUBLIC_API_BASE_URL
 ```
 
 ## Development Server
