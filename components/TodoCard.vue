@@ -3,6 +3,7 @@
   <div class="todo-card">
     <header class="todo-header">
       <h1 class="todo-title">To-do</h1>
+      <!-- New Task Input -->
       <input
         type="text"
         v-model="newTaskText"
@@ -10,7 +11,6 @@
         placeholder="New task name"
         class="task-input-field"
       />
-      <!-- <button class="add-button" @click="addTask">+</button> -->
     </header>
 
     <!-- Toast Notification -->
@@ -29,7 +29,6 @@
         :taskId="task.id"
         :completed="task.completed"
         @onSave="(newName) => updateTask(task, newName)"
-        @cancelTask="() => removeUnsavedTask(task)"
         @onDelete="fetchTasks"
         @toggleComplete="updateTaskStatus"
       />
@@ -57,8 +56,8 @@ const toastMessage = ref("");
 function showToast(message) {
   toastMessage.value = message;
   setTimeout(() => {
-    toastMessage.value = ""; // Clear message after 3 seconds
-  }, 3000);
+    toastMessage.value = "";
+  }, 2000);
 }
 
 async function fetchTasks() {
@@ -77,12 +76,6 @@ async function fetchTasks() {
 
 onMounted(fetchTasks);
 
-const removeUnsavedTask = (task) => {
-  if (!task.id) {
-    tasks.value = tasks.value.filter((t) => t !== task);
-  }
-};
-
 const addNewTask = async () => {
   if (!newTaskText.value.trim()) return;
   try {
@@ -91,7 +84,7 @@ const addNewTask = async () => {
     });
     tasks.value.unshift(createTaskDTO(response.data));
     newTaskText.value = "";
-    showToast("Task created successfully!"); // Show creation toast
+    showToast("Task created successfully!");
   } catch (error) {
     console.error("Failed to add task:", error);
   }
@@ -110,7 +103,7 @@ const updateTask = async (task, newName) => {
     try {
       const response = await axios.post("/api/todos", { name: newName });
       Object.assign(task, createTaskDTO(response.data));
-      showToast("Task created successfully!"); // Show creation toast for new tasks
+      showToast("Task created successfully!");
     } catch (error) {
       console.error("Failed to add task:", error);
       tasks.value = tasks.value.filter((t) => t !== task);
@@ -121,7 +114,7 @@ const updateTask = async (task, newName) => {
         name: newName,
         status: task.completed ? 1 : 0,
       });
-      showToast("Task updated successfully!"); // Show update toast
+      showToast("Task updated successfully!");
     } catch (error) {
       console.error("Failed to update task:", error);
     }
@@ -146,7 +139,7 @@ async function updateTaskStatus(taskId, newStatus) {
   color: white;
   width: 100%;
   max-width: 600px;
-  min-height: 500px; /* Ensures TodoCard maintains a minimum height */
+  min-height: 500px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -199,9 +192,9 @@ async function updateTaskStatus(taskId, newStatus) {
   opacity: 0.9;
 }
 .task-list {
-  max-height: 350px; /* Set a max height to trigger scrolling */
-  overflow-y: auto; /* Enable vertical scrolling */
-  padding-right: 10px; /* Padding for scrollbar spacing */
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 10px;
   margin-top: 20px;
 }
 .loading-indicator {
