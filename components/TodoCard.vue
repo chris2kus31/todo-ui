@@ -2,7 +2,7 @@
 <template>
   <div class="todo-card">
     <header class="todo-header">
-      <h1 class="todo-title">Todo</h1>
+      <h1 class="todo-title">To-do</h1>
       <input
         type="text"
         v-model="newTaskText"
