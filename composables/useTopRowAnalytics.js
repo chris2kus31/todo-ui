@@ -25,7 +25,7 @@ export function useTopRowAnalytics() {
         },
       });
       analyticsData.value = response.data;
-      console.log("Fetched analytics data:", analyticsData.value);
+
     } catch (error) {
       console.error("Error fetching analytics data:", error);
     }
