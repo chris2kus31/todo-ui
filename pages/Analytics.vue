@@ -5,8 +5,8 @@
       <TaskActionBar />
       <AnalyticsOverview />
       <AnalyticsGraph />
-          <!-- Button to go back to To-do page -->
-    <router-link to="/" class="todo-button">To-do</router-link>
+      <!-- Button to go back to To-do page -->
+      <router-link to="/" class="todo-button">To-do</router-link>
     </div>
   </div>
 </template>
