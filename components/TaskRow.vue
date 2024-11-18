@@ -37,12 +37,16 @@ import { useAxios } from "~/composables/useAxios";
 const props = defineProps({
   taskText: { type: String, required: true, default: "" },
   isEditing: { type: Boolean, default: false },
-  taskId: { type: [Number, null], required: true }, // Accepts Number or null
+  taskId: { type: [Number, null], required: true },
+  completed: { type: Boolean, default: false }, // Use prop to initialize completed state
 });
+
+console.log('completed', props.completed)
+
 const axios = useAxios();
 const emits = defineEmits(["onSave", "cancelTask", "onDelete"]);
 
-const completed = ref(false);
+const completed = ref(props.completed);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
 let saving = false;
@@ -51,10 +55,9 @@ async function markComplete() {
   try {
     await axios.patch(`/api/todos/${props.taskId}`, {
       name: taskName.value,
-      status: 1,
+      status: 1
     });
-    completed.value = true;
-    emits("onDelete", props.taskId); // Emit "onDelete" to trigger removal of the completed task in TodoCard
+    completed.value = !completed.value; // Toggle the completed state
   } catch (error) {
     console.error("Failed to mark task as complete:", error);
   }
@@ -169,12 +172,6 @@ async function saveName() {
   transform: rotate(45deg);
 }
 
-.task-text {
-  color: white;
-  font-size: 1em;
-  transition: color 0.3s ease;
-  margin-left: 10px;
-}
 .task-input {
   background-color: #3d4552;
   color: white;
@@ -183,10 +180,6 @@ async function saveName() {
   border-radius: 4px;
   width: 100%;
   margin-left: 10px;
-}
-.completed-task {
-  color: #a9a9a9;
-  text-decoration: line-through;
 }
 .delete-button {
   background-color: #f26b5e;
@@ -198,7 +191,6 @@ async function saveName() {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .delete-button:hover {
   background-color: #d5584d;
 }
@@ -212,7 +204,6 @@ async function saveName() {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .complete-button:hover {
   background-color: #45a049;
 }
@@ -224,8 +215,17 @@ async function saveName() {
   cursor: pointer;
   margin-left: 10px;
 }
-
 .trash-button:hover {
   color: #d5584d;
+}
+.task-text {
+  color: white;
+  font-size: 1em;
+  transition: color 0.3s ease;
+  margin-left: 10px;
+}
+.completed-task {
+  color: #a9a9a9;
+  text-decoration: line-through;
 }
 </style>

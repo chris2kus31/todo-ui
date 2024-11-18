@@ -20,6 +20,7 @@
       :taskText="task.text || ''"
       :isEditing="task.isEditing"
       :taskId="task.id"
+      :completed="task.completed"
       @onSave="(newName) => saveTask(task, newName)"
       @cancelTask="() => cancelTask(task)"
       @onDelete="fetchTasks"
@@ -42,14 +43,12 @@ const savingTask = ref(false);
 async function fetchTasks() {
   try {
     const response = await axios.get("/api/todos");
-    tasks.value = response.data.data
-      .filter((task) => task.status === 0) // Only include incomplete tasks
-      .map((task) => ({
-        id: task.id,
-        text: task.name,
-        isEditing: false,
-        completed: task.status === 1,
-      }));
+    tasks.value = response.data.data.map((task) => ({
+      id: task.id,
+      text: task.name,
+      isEditing: false,
+      completed: task.status === 1, // Convert status to Boolean
+    }));
   } catch (error) {
     console.error("Error fetching tasks:", error);
   }
@@ -67,7 +66,9 @@ const cancelTask = (task) => {
 const addTask = async () => {
   if (!newTaskText.value.trim()) return;
   try {
-    const response = await axios.post("/api/todos", { name: newTaskText.value.trim() });
+    const response = await axios.post("/api/todos", {
+      name: newTaskText.value.trim(),
+    });
     tasks.value.push({
       id: response.data.id,
       text: response.data.name,
