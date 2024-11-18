@@ -36,71 +36,81 @@ import { useAxios } from "~/composables/useAxios";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 
 const axios = useAxios();
+
+// Define properties with expected data types
 const props = defineProps({
-  taskText: { type: String, required: true, default: "" },
-  isEditing: { type: Boolean, default: false },
-  taskId: { type: [Number, null], required: true },
-  completed: { type: Boolean, default: false },
+  taskText: { type: String, required: true, default: "" }, // Task name
+  isEditing: { type: Boolean, default: false }, // Edit mode flag
+  taskId: { type: [Number, null], required: true }, // Unique ID or null for unsaved tasks
+  completed: { type: Boolean, default: false }, // Completion status
 });
 
+// Define event emitters for parent communication
 const emits = defineEmits([
-  "onSave",
-  "cancelTask",
-  "onDelete",
-  "toggleComplete",
+  "onSave", // Triggered when saving a task's new name
+  "cancelTask", // Triggered if edit is canceled
+  "onDelete", // Triggered when a task is deleted
+  "toggleComplete", // Triggered to toggle completion status
 ]);
 
+// Local state for task's completion status, edit mode, and text
 const completed = ref(props.completed);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
-let saving = false;
+let saving = false; // Prevents concurrent save actions
 
+// Toggles the completion status of the task
 async function markComplete() {
-  const newStatus = props.completed ? 0 : 1; // Toggle status
+  const newStatus = props.completed ? 0 : 1; // Switches between completed and pending
   try {
     await axios.patch(`/api/todos/${props.taskId}`, {
       name: taskName.value,
       status: newStatus,
     });
-    emits("toggleComplete", props.taskId, Boolean(newStatus)); // Emit as Boolean for consistency
+    emits("toggleComplete", props.taskId, Boolean(newStatus)); // Emit event as Boolean for consistency
   } catch (error) {
     console.error("Failed to update task status:", error);
   }
 }
 
+// Enables edit mode for the task if it isn't completed
 const enableEditing = async () => {
   if (!completed.value) {
-    isEditing.value = true;
-    await nextTick();
-    document.querySelector(".task-input").focus();
+    isEditing.value = true; // Enable edit mode
+    await nextTick(); // Wait until DOM updates before focusing
+    document.querySelector(".task-input").focus(); // Auto-focus on input field
   }
 };
 
+// Cancels editing if the new name is empty; otherwise, saves the name
 function cancelOrSave() {
   if (taskName.value.trim()) {
     saveName();
   } else {
-    emits("cancelTask");
+    emits("cancelTask"); // Emit cancel event if no name entered
   }
 }
 
+// Deletes the task and emits a deletion event
 async function deleteTask() {
   try {
     await axios.delete(`/api/todos/${props.taskId}`);
-    emits("onDelete"); // Emit event to refresh tasks in TodoCard
+    emits("onDelete"); // Trigger deletion on parent component
   } catch (error) {
     console.error("Failed to delete task:", error);
   }
 }
 
+// Saves the task's new name if modified
 async function saveName() {
-  if (saving) return; // Prevent double calls
+  if (saving) return; // Prevent duplicate saves
   saving = true;
   isEditing.value = false;
-  emits("onSave", taskName.value.trim() || "Unnamed Task");
+  emits("onSave", taskName.value.trim() || "Unnamed Task"); // Default name if input is empty
   saving = false;
 }
 
+// Update the task name whenever `taskText` prop changes
 watch(
   () => props.taskText,
   (newVal) => {
