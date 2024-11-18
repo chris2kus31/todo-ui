@@ -16,8 +16,8 @@
     <!-- Toast Notification Component -->
     <ToastNotification :message="toastMessage" />
 
-    <!-- Task list and loading indicator -->
-    <div v-if="loading" class="loading-indicator">Loading tasks...</div>
+    <!-- Loading Indicator Component -->
+    <LoadingIndicator :visible="loading" />
 
     <!-- Render TaskRow components for each task in the tasks array -->
     <div class="task-list">
@@ -46,6 +46,7 @@ import TaskItem from "~/components/TaskItem.vue";
 import { useAxios } from "~/composables/useAxios";
 import { createTaskDTO } from "~/composables/dto/Task.dto";
 import ToastNotification from "~/components/ToastNotification.vue";
+import LoadingIndicator from "~/components/LoadingIndicator.vue";
 
 const tasks = ref([]);
 const axios = useAxios();
