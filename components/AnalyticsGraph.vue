@@ -73,7 +73,6 @@ const chartOptions = {
     },
   },
 };
-
 </script>
 
 <style scoped>

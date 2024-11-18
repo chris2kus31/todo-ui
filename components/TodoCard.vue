@@ -12,7 +12,7 @@
       />
       <!-- <button class="add-button" @click="addTask">+</button> -->
     </header>
-
+    <div v-if="loading" class="loading-indicator">Loading tasks...</div>
     <!-- Render TaskRow components for each task in the tasks array -->
     <div class="task-list">
       <TaskRow
@@ -44,8 +44,10 @@ const tasks = ref([]);
 const axios = useAxios();
 const newTaskText = ref("");
 const savingTask = ref(false);
+const loading = ref(true);
 
 async function fetchTasks() {
+  loading.value = true; // Set loading state to true
   try {
     const response = await axios.get("/api/todos");
     tasks.value = response.data.data
@@ -53,11 +55,13 @@ async function fetchTasks() {
         id: task.id,
         text: task.name,
         isEditing: false,
-        completed: task.status === 1, // Convert status to Boolean
+        completed: task.status === 1,
       }))
-      .sort((a, b) => a.completed - b.completed || b.id - a.id); // Sort by completion, then by newest first
+      .sort((a, b) => a.completed - b.completed || b.id - a.id);
   } catch (error) {
     console.error("Error fetching tasks:", error);
+  } finally {
+    loading.value = false; // Reset loading state
   }
 }
 
@@ -198,6 +202,12 @@ async function updateTaskStatus(taskId, newStatus) {
   max-height: 350px; /* Set a max height to trigger scrolling */
   overflow-y: auto; /* Enable vertical scrolling */
   padding-right: 10px; /* Padding for scrollbar spacing */
+  margin-top: 20px;
+}
+.loading-indicator {
+  text-align: center;
+  font-size: 1.2em;
+  color: #f26b5e;
   margin-top: 20px;
 }
 </style>
