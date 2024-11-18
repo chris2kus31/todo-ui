@@ -140,6 +140,7 @@ async function saveName() {
   border-radius: 4px;
   transition: background-color 0.3s ease, border-color 0.3s ease;
   cursor: pointer;
+  position: relative; /* Ensure the pseudo-element positions correctly */
 }
 .task-checkbox:checked {
   background-color: #f26b5e;
@@ -150,9 +151,9 @@ async function saveName() {
   content: "";
   position: absolute;
   left: 3px;
-  top: 1px;
-  width: 6px;
-  height: 10px;
+  bottom: 2px;
+  width: 4px;
+  height: 9px;
   border: solid white;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
