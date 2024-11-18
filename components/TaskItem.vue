@@ -56,17 +56,18 @@ const taskName = ref(props.taskText);
 let saving = false;
 
 async function markComplete() {
-  const newStatus = props.completed ? 0 : 1; // Toggle based on current completed status
+  const newStatus = props.completed ? 0 : 1; // Toggle status
   try {
     await axios.patch(`/api/todos/${props.taskId}`, {
       name: taskName.value,
       status: newStatus,
     });
-    emits("toggleComplete", props.taskId, newStatus); // Emit event with the new status
+    emits("toggleComplete", props.taskId, Boolean(newStatus)); // Emit as Boolean for consistency
   } catch (error) {
     console.error("Failed to update task status:", error);
   }
 }
+
 
 const enableEditing = async () => {
   if (!completed.value) {

@@ -21,7 +21,7 @@
 
     <!-- Render TaskRow components for each task in the tasks array -->
     <div class="task-list">
-      <TaskRow
+      <TaskItem
         v-for="task in tasks"
         :key="task.id"
         :taskText="task.text || ''"
@@ -43,7 +43,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import TaskRow from "~/components/TaskItem.vue";
+import TaskItem from "~/components/TaskItem.vue";
 import { useAxios } from "~/composables/useAxios";
 import { createTaskDTO } from "~/composables/dto/Task.dto";
 
@@ -89,7 +89,7 @@ const addNewTask = async () => {
     const response = await axios.post("/api/todos", {
       name: newTaskText.value.trim(),
     });
-    tasks.value.unshift(createTaskDTO(response.data)); 
+    tasks.value.unshift(createTaskDTO(response.data));
     newTaskText.value = "";
     showToast("Task created successfully!"); // Show creation toast
   } catch (error) {
@@ -131,16 +131,9 @@ const updateTask = async (task, newName) => {
 async function updateTaskStatus(taskId, newStatus) {
   const task = tasks.value.find((task) => task.id === taskId);
   if (task) {
-    try {
-      await axios.put(`/api/todos/${taskId}`, {
-        name: task.text,
-        status: newStatus,
-      });
-      await fetchTasks();
-      showToast(`Task marked as ${newStatus ? "completed" : "pending"}!`); // Show status change toast
-    } catch (error) {
-      console.error("Failed to update task status:", error);
-    }
+    task.completed = Boolean(newStatus);
+    await fetchTasks();
+    showToast(`Task marked as ${newStatus ? "completed" : "pending"}!`);
   }
 }
 </script>
