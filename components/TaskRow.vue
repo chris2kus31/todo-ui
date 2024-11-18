@@ -63,19 +63,6 @@ async function markComplete() {
   }
 }
 
-async function completeTask() {
-  try {
-    await axios.patch(`/api/todos/${props.taskId}`, {
-      name: taskName.value,
-      status: 1,
-    });
-    completed.value = true;
-    emits("onDelete", props.taskId); // Emit "onDelete" to trigger removal of the completed task in TodoCard
-  } catch (error) {
-    console.error("Failed to complete task:", error);
-  }
-}
-
 const enableEditing = async () => {
   if (!completed.value) {
     isEditing.value = true;
@@ -133,12 +120,6 @@ async function saveName() {
 .task-row:hover {
   background-color: #454e59;
 }
-.task-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
 .task-checkbox-container {
   width: 24px;
   display: flex;
@@ -171,7 +152,6 @@ async function saveName() {
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
-
 .task-input {
   background-color: #3d4552;
   color: white;
@@ -180,32 +160,6 @@ async function saveName() {
   border-radius: 4px;
   width: 100%;
   margin-left: 10px;
-}
-.delete-button {
-  background-color: #f26b5e;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.delete-button:hover {
-  background-color: #d5584d;
-}
-.complete-button {
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.complete-button:hover {
-  background-color: #45a049;
 }
 .trash-icon {
   margin-left: auto;
