@@ -1,6 +1,5 @@
 <template>
   <div class="page-wrapper">
-    <!-- Use LayoutContainer to organize TodoCard and Analytics components -->
     <LayoutContainer />
   </div>
 </template>

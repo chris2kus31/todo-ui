@@ -27,6 +27,10 @@
       @onComplete="fetchTasks"
       @toggleComplete="updateTaskStatus"
     />
+    <!-- See Analytics Button -->
+    <router-link to="/analytics" class="analytics-button"
+      >See Analytics</router-link
+    >
   </div>
 </template>
 
@@ -130,7 +134,12 @@ function updateTaskStatus(taskId, newStatus) {
   padding: 20px;
   border-radius: 8px;
   color: white;
-  width: 600px;
+  width: 100%;
+  max-width: 600px;
+  min-height: 500px; /* Ensures TodoCard maintains a minimum height */
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 .todo-header {
   display: flex;
@@ -163,5 +172,21 @@ function updateTaskStatus(taskId, newStatus) {
   border: 1px solid #f26b5e;
   color: #fff;
   background-color: #3d4552;
+}
+.analytics-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #f26b5e;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.analytics-button:hover {
+  opacity: 0.9;
 }
 </style>
