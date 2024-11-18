@@ -14,18 +14,20 @@
     </header>
 
     <!-- Render TaskRow components for each task in the tasks array -->
-    <TaskRow
-      v-for="task in tasks"
-      :key="task.id"
-      :taskText="task.text || ''"
-      :isEditing="task.isEditing"
-      :taskId="task.id"
-      :completed="task.completed"
-      @onSave="(newName) => updateTask(task, newName)"
-      @cancelTask="() => removeUnsavedTask(task)"
-      @onDelete="fetchTasks"
-      @toggleComplete="updateTaskStatus"
-    />
+    <div class="task-list">
+      <TaskRow
+        v-for="task in tasks"
+        :key="task.id"
+        :taskText="task.text || ''"
+        :isEditing="task.isEditing"
+        :taskId="task.id"
+        :completed="task.completed"
+        @onSave="(newName) => updateTask(task, newName)"
+        @cancelTask="() => removeUnsavedTask(task)"
+        @onDelete="fetchTasks"
+        @toggleComplete="updateTaskStatus"
+      />
+    </div>
     <!-- See Analytics Button -->
     <router-link to="/analytics" class="analytics-button"
       >See Analytics</router-link
@@ -46,12 +48,14 @@ const savingTask = ref(false);
 async function fetchTasks() {
   try {
     const response = await axios.get("/api/todos");
-    tasks.value = response.data.data.map((task) => ({
-      id: task.id,
-      text: task.name,
-      isEditing: false,
-      completed: task.status === 1, // Convert status to Boolean
-    }));
+    tasks.value = response.data.data
+      .map((task) => ({
+        id: task.id,
+        text: task.name,
+        isEditing: false,
+        completed: task.status === 1, // Convert status to Boolean
+      }))
+      .sort((a, b) => a.completed - b.completed || b.id - a.id); // Sort by completion, then by newest first
   } catch (error) {
     console.error("Error fetching tasks:", error);
   }
@@ -71,7 +75,8 @@ const addNewTask = async () => {
     const response = await axios.post("/api/todos", {
       name: newTaskText.value.trim(),
     });
-    tasks.value.push({
+    tasks.value.unshift({
+      // Add the new task at the beginning
       id: response.data.id,
       text: response.data.name,
       isEditing: false,
@@ -113,10 +118,18 @@ const updateTask = async (task, newName) => {
   }
 };
 
-function updateTaskStatus(taskId, newStatus) {
+async function updateTaskStatus(taskId, newStatus) {
   const task = tasks.value.find((task) => task.id === taskId);
   if (task) {
-    task.completed = newStatus === 1;
+    try {
+      await axios.put(`/api/todos/${taskId}`, {
+        name: task.text,
+        status: newStatus,
+      });
+      await fetchTasks(); // Refetch tasks to reapply the sorting
+    } catch (error) {
+      console.error("Failed to update task status:", error);
+    }
   }
 }
 </script>
@@ -178,8 +191,13 @@ function updateTaskStatus(taskId, newStatus) {
   font-size: 0.9em;
   cursor: pointer;
 }
-
 .analytics-button:hover {
   opacity: 0.9;
+}
+.task-list {
+  max-height: 350px; /* Set a max height to trigger scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-right: 10px; /* Padding for scrollbar spacing */
+  margin-top: 20px;
 }
 </style>
