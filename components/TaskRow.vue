@@ -84,15 +84,6 @@ function cancelOrSave() {
   }
 }
 
-watch(
-  () => props.taskText,
-  (newVal) => {
-    if (newVal !== undefined) {
-      taskName.value = newVal;
-    }
-  }
-);
-
 async function deleteTask() {
   try {
     await axios.delete(`/api/todos/${props.taskId}`);
@@ -109,6 +100,16 @@ async function saveName() {
   emits("onSave", taskName.value.trim() || "Unnamed Task");
   saving = false;
 }
+
+watch(
+  () => props.taskText,
+  (newVal) => {
+    if (newVal !== undefined) {
+      taskName.value = newVal;
+    }
+  }
+);
+
 </script>
 
 <style scoped>

@@ -12,7 +12,13 @@
       />
       <!-- <button class="add-button" @click="addTask">+</button> -->
     </header>
+
+    <!-- Toast Notification -->
+    <div v-if="toastMessage" class="toast">{{ toastMessage }}</div>
+
+    <!-- Task list and loading indicator -->
     <div v-if="loading" class="loading-indicator">Loading tasks...</div>
+
     <!-- Render TaskRow components for each task in the tasks array -->
     <div class="task-list">
       <TaskRow
@@ -45,9 +51,17 @@ const axios = useAxios();
 const newTaskText = ref("");
 const savingTask = ref(false);
 const loading = ref(true);
+const toastMessage = ref("");
+
+function showToast(message) {
+  toastMessage.value = message;
+  setTimeout(() => {
+    toastMessage.value = ""; // Clear message after 3 seconds
+  }, 3000);
+}
 
 async function fetchTasks() {
-  loading.value = true; // Set loading state to true
+  loading.value = true;
   try {
     const response = await axios.get("/api/todos");
     tasks.value = response.data.data
@@ -61,7 +75,7 @@ async function fetchTasks() {
   } catch (error) {
     console.error("Error fetching tasks:", error);
   } finally {
-    loading.value = false; // Reset loading state
+    loading.value = false;
   }
 }
 
@@ -80,13 +94,13 @@ const addNewTask = async () => {
       name: newTaskText.value.trim(),
     });
     tasks.value.unshift({
-      // Add the new task at the beginning
       id: response.data.id,
       text: response.data.name,
       isEditing: false,
       completed: false,
     });
     newTaskText.value = "";
+    showToast("Task created successfully!"); // Show creation toast
   } catch (error) {
     console.error("Failed to add task:", error);
   }
@@ -106,6 +120,7 @@ const updateTask = async (task, newName) => {
       const response = await axios.post("/api/todos", { name: newName });
       task.id = response.data.id;
       task.text = response.data.name;
+      showToast("Task created successfully!"); // Show creation toast for new tasks
     } catch (error) {
       console.error("Failed to add task:", error);
       tasks.value = tasks.value.filter((t) => t !== task);
@@ -116,6 +131,7 @@ const updateTask = async (task, newName) => {
         name: newName,
         status: task.completed ? 1 : 0,
       });
+      showToast("Task updated successfully!"); // Show update toast
     } catch (error) {
       console.error("Failed to update task:", error);
     }
@@ -130,7 +146,8 @@ async function updateTaskStatus(taskId, newStatus) {
         name: task.text,
         status: newStatus,
       });
-      await fetchTasks(); // Refetch tasks to reapply the sorting
+      await fetchTasks();
+      showToast(`Task marked as ${newStatus ? "completed" : "pending"}!`); // Show status change toast
     } catch (error) {
       console.error("Failed to update task status:", error);
     }
@@ -209,5 +226,20 @@ async function updateTaskStatus(taskId, newStatus) {
   font-size: 1.2em;
   color: #f26b5e;
   margin-top: 20px;
+}
+.toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1em;
+  text-align: center;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 10;
 }
 </style>
