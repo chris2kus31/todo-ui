@@ -31,18 +31,18 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, watch } from "vue";
+import { ref, watch } from "vue";
 import { useAxios } from "~/composables/useAxios";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 
+const axios = useAxios();
 const props = defineProps({
   taskText: { type: String, required: true, default: "" },
   isEditing: { type: Boolean, default: false },
   taskId: { type: [Number, null], required: true },
-  completed: { type: Boolean, default: false }, // Use prop to initialize completed state
+  completed: { type: Boolean, default: false },
 });
 
-const axios = useAxios();
 const emits = defineEmits([
   "onSave",
   "cancelTask",
