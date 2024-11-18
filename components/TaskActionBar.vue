@@ -1,7 +1,16 @@
 <template>
   <div class="actions-bar">
-    <!-- Date Picker for selecting range -->
-    <VueDatePicker v-model="dateRange" range multi-calendars />
+    <label for="date-range-picker" class="date-range-label"
+      >Select Date Range:</label
+    >
+    <VueDatePicker
+      v-model="dateRange"
+      range
+      multi-calendars
+      id="date-range-picker"
+      :dark-mode="true"
+      :placeholder="placeholderText"
+    />
   </div>
 </template>
 
@@ -10,16 +19,15 @@ import { ref, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
-import { useAxios } from "~/composables/useAxios";
 
 const { fetchAnalyticsData } = useTopRowAnalytics();
-const axios = useAxios();
+const dateRange = ref([
+  new Date(),
+  new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+]); // initial 7-day range
+const placeholderText = "Click to select a date range"; // guiding text for date picker
 
-const startDate = new Date();
-const endDate = new Date();
-endDate.setDate(startDate.getDate() + 7);
-const dateRange = ref([startDate, endDate]);
-
+// Watch for changes in date range and fetch data
 watch(
   dateRange,
   ([start, end]) => {
@@ -29,16 +37,6 @@ watch(
   },
   { immediate: true }
 );
-
-const formatDate = (date) => {
-  return date
-    ? date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "";
-};
 </script>
 
 <style scoped>
@@ -46,16 +44,15 @@ const formatDate = (date) => {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  background-color: #4b5563; /* Dark background for dark mode */
+  padding: 10px 20px;
+  border-radius: 8px;
 }
 
-.date-display {
-  margin-left: 10px;
-}
-
-.date-range-text {
-  background-color: #3d4552;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
+.date-range-label {
+  color: #f0f0f0; /* Light color for dark mode readability */
+  margin-right: 10px;
+  font-size: 1em;
+  font-weight: bold;
 }
 </style>
