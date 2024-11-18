@@ -41,7 +41,6 @@ const props = defineProps({
   completed: { type: Boolean, default: false }, // Use prop to initialize completed state
 });
 
-console.log('completed', props.completed)
 
 const axios = useAxios();
 const emits = defineEmits(["onSave", "cancelTask", "onDelete"]);
@@ -52,14 +51,15 @@ const taskName = ref(props.taskText);
 let saving = false;
 
 async function markComplete() {
+  const newStatus = props.completed ? 0 : 1; // Toggle based on current completed status
   try {
     await axios.patch(`/api/todos/${props.taskId}`, {
       name: taskName.value,
-      status: 1
+      status: newStatus,
     });
-    completed.value = !completed.value; // Toggle the completed state
+    emits("toggleComplete", props.taskId, newStatus); // Emit event with the new status
   } catch (error) {
-    console.error("Failed to mark task as complete:", error);
+    console.error("Failed to update task status:", error);
   }
 }
 

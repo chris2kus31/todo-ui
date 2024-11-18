@@ -25,6 +25,7 @@
       @cancelTask="() => cancelTask(task)"
       @onDelete="fetchTasks"
       @onComplete="fetchTasks"
+      @toggleComplete="updateTaskStatus"
     />
   </div>
 </template>
@@ -40,6 +41,7 @@ const newTaskText = ref("");
 
 let taskIdCounter = 1;
 const savingTask = ref(false);
+
 async function fetchTasks() {
   try {
     const response = await axios.get("/api/todos");
@@ -110,6 +112,13 @@ const saveTask = async (task, newName) => {
     }
   }
 };
+
+function updateTaskStatus(taskId, newStatus) {
+  const task = tasks.value.find((task) => task.id === taskId);
+  if (task) {
+    task.completed = newStatus === 1;
+  }
+}
 </script>
 
 <style scoped>
