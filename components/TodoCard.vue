@@ -19,8 +19,16 @@
     <!-- Loading Indicator Component -->
     <LoadingIndicator :visible="loading" />
 
+    <!-- Show placeholder when there are no tasks -->
+    <div v-if="!loading && tasks.length === 0" class="empty-task">
+      <img src="/add-task.png" alt="Empty Task Icon" class="empty-icon" />
+      <p class="empty-message">
+        Looking empty! Add your first task above and press Enter.
+      </p>
+    </div>
+
     <!-- Render TaskRow components for each task in the tasks array -->
-    <div class="task-list">
+    <div v-else class="task-list">
       <TaskItem
         v-for="task in tasks"
         :key="task.id"
@@ -198,5 +206,21 @@ async function updateTaskStatus(taskId, newStatus) {
   font-size: 1.2em;
   color: #f26b5e;
   margin-top: 20px;
+}
+.empty-task {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 80px;
+}
+.empty-icon {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+.empty-message {
+  color: #a9a9a9;
+  font-size: 1.2em;
 }
 </style>
