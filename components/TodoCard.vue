@@ -13,8 +13,8 @@
       />
     </header>
 
-    <!-- Toast Notification -->
-    <div v-if="toastMessage" class="toast">{{ toastMessage }}</div>
+    <!-- Toast Notification Component -->
+    <ToastNotification :message="toastMessage" />
 
     <!-- Task list and loading indicator -->
     <div v-if="loading" class="loading-indicator">Loading tasks...</div>
@@ -45,6 +45,7 @@ import { ref, onMounted } from "vue";
 import TaskItem from "~/components/TaskItem.vue";
 import { useAxios } from "~/composables/useAxios";
 import { createTaskDTO } from "~/composables/dto/Task.dto";
+import ToastNotification from "~/components/ToastNotification.vue";
 
 const tasks = ref([]);
 const axios = useAxios();
@@ -55,9 +56,6 @@ const toastMessage = ref("");
 
 function showToast(message) {
   toastMessage.value = message;
-  setTimeout(() => {
-    toastMessage.value = "";
-  }, 2000);
 }
 
 async function fetchTasks() {
@@ -202,20 +200,5 @@ async function updateTaskStatus(taskId, newStatus) {
   font-size: 1.2em;
   color: #f26b5e;
   margin-top: 20px;
-}
-.toast {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  font-size: 1em;
-  text-align: center;
-  transition: opacity 0.3s ease-in-out;
-  z-index: 10;
 }
 </style>
