@@ -2,8 +2,8 @@
   <div class="page-wrapper">
     <div class="analytics-container">
       <!-- Include TopRowAnalytics, ActionBar, and AnalyticsGraph components -->
-      <ActionBar />
-      <TopRowAnalytics />
+      <TaskActionBar />
+      <AnalyticsOverview />
       <AnalyticsGraph />
           <!-- Button to go back to To-do page -->
     <router-link to="/" class="todo-button">To-do</router-link>
@@ -12,8 +12,8 @@
 </template>
 
 <script setup>
-import TopRowAnalytics from "~/components/TopRowAnalytics.vue";
-import ActionBar from "~/components/ActionBar.vue";
+import AnalyticsOverview from "~/components/AnalyticsOverview.vue";
+import TaskActionBar from "~/components/TaskActionBar.vue";
 import AnalyticsGraph from "~/components/AnalyticsGraph.vue";
 </script>
 

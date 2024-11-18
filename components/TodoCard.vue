@@ -43,7 +43,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import TaskRow from "~/components/TaskRow.vue";
+import TaskRow from "~/components/TaskItem.vue";
 import { useAxios } from "~/composables/useAxios";
 
 const tasks = ref([]);
