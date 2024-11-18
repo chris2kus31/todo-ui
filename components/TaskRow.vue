@@ -127,7 +127,7 @@ async function saveName() {
   padding: 12px;
   border-radius: 8px;
   transition: background-color 0.3s ease;
-  background-color: #4b5563;
+  background-color: #4B5563;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 .task-row:hover {

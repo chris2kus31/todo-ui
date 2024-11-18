@@ -10,7 +10,7 @@
         placeholder="New task name"
         class="task-input-field"
       />
-      <button class="add-button" @click="addTask">+</button>
+      <!-- <button class="add-button" @click="addTask">+</button> -->
     </header>
 
     <!-- Render TaskRow components for each task in the tasks array -->
@@ -127,6 +127,7 @@ function updateTaskStatus(taskId, newStatus) {
   padding: 20px;
   border-radius: 8px;
   color: white;
+  width: 600px;
 }
 .todo-header {
   display: flex;

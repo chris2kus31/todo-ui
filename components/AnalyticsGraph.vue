@@ -40,7 +40,7 @@ const options = {
 
 <style scoped>
 .analytics-card {
-  background-color: #3d4552;
+  background-color: #4B5563;
   padding: 20px;
   border-radius: 8px;
   color: white;
