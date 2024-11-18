@@ -9,10 +9,12 @@
 import { computed } from "vue";
 import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
 import BarChart from "~/components/BarChart.vue";
-import { createAnalyticsDTO, createChartOptionsDTO } from "~/composables/dto/Analytics.dto";
+import {
+  createAnalyticsDTO,
+  createChartOptionsDTO,
+} from "~/composables/dto/Analytics.dto";
 
 const { analyticsData } = useTopRowAnalytics();
-
 const chartData = computed(() => createAnalyticsDTO(analyticsData.value)); 
 const chartOptions = createChartOptionsDTO();
 
