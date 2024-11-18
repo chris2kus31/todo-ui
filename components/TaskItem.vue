@@ -1,6 +1,7 @@
 <!-- components/TaskRow.vue -->
 <template>
   <div class="task-row">
+    <!-- Checkbox to mark task as complete/incomplete -->
     <div class="task-checkbox-container">
       <input
         type="checkbox"
@@ -9,6 +10,8 @@
         @change="markComplete"
       />
     </div>
+
+    <!-- Task name display, switches to input on edit mode -->
     <span
       v-if="!isEditing"
       :class="{ 'task-text': true, 'completed-task': completed }"
@@ -17,105 +20,111 @@
       {{ taskName }}
     </span>
 
+    <!-- Editable task input field, appears in edit mode -->
     <input
       v-if="isEditing"
+      ref="taskInputRef"
       v-model="taskName"
       class="task-input"
       @keyup.enter="saveName"
-      @blur="cancelOrSave"
+      @blur="handleBlur"
       placeholder="Name your task"
     />
 
+    <!-- Delete task icon -->
     <TrashIcon class="trash-icon" @click="deleteTask" />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import { useAxios } from "~/composables/useAxios";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 
 const axios = useAxios();
-
-// Define properties with expected data types
 const props = defineProps({
-  taskText: { type: String, required: true, default: "" }, // Task name
-  isEditing: { type: Boolean, default: false }, // Edit mode flag
-  taskId: { type: [Number, null], required: true }, // Unique ID or null for unsaved tasks
-  completed: { type: Boolean, default: false }, // Completion status
+  taskText: { type: String, required: true, default: "" },
+  isEditing: { type: Boolean, default: false },
+  taskId: { type: [Number, null], required: true },
+  completed: { type: Boolean, default: false },
 });
 
-// Define event emitters for parent communication
+// Define emitted events for parent component communication
 const emits = defineEmits([
-  "onSave", // Triggered when saving a task's new name
-  "cancelTask", // Triggered if edit is canceled
-  "onDelete", // Triggered when a task is deleted
-  "toggleComplete", // Triggered to toggle completion status
+  "onSave",
+  "cancelTask",
+  "onDelete",
+  "toggleComplete",
 ]);
 
-// Local state for task's completion status, edit mode, and text
+// Local state for task properties and editing mode
 const completed = ref(props.completed);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
-let saving = false; // Prevents concurrent save actions
+const taskInputRef = ref(null);
 
-// Toggles the completion status of the task
+// Toggles task completion status, making an API call and emitting the updated status
 async function markComplete() {
-  const newStatus = props.completed ? 0 : 1; // Switches between completed and pending
+  const newStatus = props.completed ? 0 : 1;
   try {
     await axios.patch(`/api/todos/${props.taskId}`, {
       name: taskName.value,
       status: newStatus,
     });
-    emits("toggleComplete", props.taskId, Boolean(newStatus)); // Emit event as Boolean for consistency
+    emits("toggleComplete", props.taskId, Boolean(newStatus)); // Emit updated status to parent
   } catch (error) {
     console.error("Failed to update task status:", error);
   }
 }
 
-// Enables edit mode for the task if it isn't completed
+// Enables editing mode for task name, focusing the input
 const enableEditing = async () => {
   if (!completed.value) {
-    isEditing.value = true; // Enable edit mode
-    await nextTick(); // Wait until DOM updates before focusing
-    document.querySelector(".task-input").focus(); // Auto-focus on input field
+    // Only allow editing if task is not completed
+    isEditing.value = true;
+    await nextTick(); // Ensure DOM is updated before focusing
+    taskInputRef.value?.focus();
   }
 };
 
-// Cancels editing if the new name is empty; otherwise, saves the name
-function cancelOrSave() {
-  if (taskName.value.trim()) {
-    saveName();
+// Handles blur event on input, saves or cancels edit based on input change
+function handleBlur() {
+  if (taskName.value.trim() === props.taskText.trim()) {
+    cancelEdit(); // Exit edit mode if no changes
   } else {
-    emits("cancelTask"); // Emit cancel event if no name entered
+    saveName(); // Save if changes exist
   }
 }
 
-// Deletes the task and emits a deletion event
+// Exits edit mode without saving changes
+function cancelEdit() {
+  isEditing.value = false;
+  emits("cancelTask"); // Notify parent to cancel edit
+}
+
+// Saves the task name, emits change to parent, and exits edit mode
+function saveName() {
+  if (!taskName.value.trim()) return cancelEdit(); // Cancel if input is empty
+  isEditing.value = false;
+  emits("onSave", taskName.value.trim() || "Unnamed Task"); // Save with default if empty
+}
+
+// Deletes task via API call and emits an event to refresh parent list
 async function deleteTask() {
   try {
     await axios.delete(`/api/todos/${props.taskId}`);
-    emits("onDelete"); // Trigger deletion on parent component
+    emits("onDelete"); // Notify parent of task deletion
   } catch (error) {
     console.error("Failed to delete task:", error);
   }
 }
 
-// Saves the task's new name if modified
-async function saveName() {
-  if (saving) return; // Prevent duplicate saves
-  saving = true;
-  isEditing.value = false;
-  emits("onSave", taskName.value.trim() || "Unnamed Task"); // Default name if input is empty
-  saving = false;
-}
-
-// Update the task name whenever `taskText` prop changes
+// Watches for prop updates to reflect any changes to task text in local state
 watch(
   () => props.taskText,
   (newVal) => {
     if (newVal !== undefined) {
-      taskName.value = newVal;
+      taskName.value = newVal; // Keep local task name in sync with prop
     }
   }
 );
