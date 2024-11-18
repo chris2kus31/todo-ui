@@ -43,7 +43,7 @@ const props = defineProps({
 });
 
 const axios = useAxios();
-const emits = defineEmits(["onSave", "cancelTask", "onDelete"]);
+const emits = defineEmits(["onSave", "cancelTask", "onDelete", "toggleComplete"])
 
 const completed = ref(props.completed);
 const isEditing = ref(props.isEditing);

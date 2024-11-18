@@ -34,6 +34,7 @@
 import { ref, onMounted } from "vue";
 import TaskRow from "~/components/TaskRow.vue";
 import { useAxios } from "~/composables/useAxios";
+const { fetchAnalyticsData } = useTopRowAnalytics();
 
 const tasks = ref([]);
 const axios = useAxios();
@@ -78,6 +79,7 @@ const addTask = async () => {
       completed: false,
     });
     newTaskText.value = ""; // Clear input field after adding task
+    await fetchAnalyticsData(); // Update analytics data after adding a task
   } catch (error) {
     console.error("Failed to add task:", error);
   }
@@ -117,6 +119,7 @@ function updateTaskStatus(taskId, newStatus) {
   const task = tasks.value.find((task) => task.id === taskId);
   if (task) {
     task.completed = newStatus === 1;
+    fetchAnalyticsData(); // Refresh analytics and graph
   }
 }
 </script>
