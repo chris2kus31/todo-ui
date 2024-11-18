@@ -45,6 +45,7 @@
 import { ref, onMounted } from "vue";
 import TaskRow from "~/components/TaskItem.vue";
 import { useAxios } from "~/composables/useAxios";
+import { createTaskDTO } from "~/composables/dto/Task.dto";
 
 const tasks = ref([]);
 const axios = useAxios();
@@ -65,12 +66,7 @@ async function fetchTasks() {
   try {
     const response = await axios.get("/api/todos");
     tasks.value = response.data.data
-      .map((task) => ({
-        id: task.id,
-        text: task.name,
-        isEditing: false,
-        completed: task.status === 1,
-      }))
+      .map((task) => createTaskDTO(task))
       .sort((a, b) => a.completed - b.completed || b.id - a.id);
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -93,12 +89,7 @@ const addNewTask = async () => {
     const response = await axios.post("/api/todos", {
       name: newTaskText.value.trim(),
     });
-    tasks.value.unshift({
-      id: response.data.id,
-      text: response.data.name,
-      isEditing: false,
-      completed: false,
-    });
+    tasks.value.unshift(createTaskDTO(response.data)); 
     newTaskText.value = "";
     showToast("Task created successfully!"); // Show creation toast
   } catch (error) {
@@ -118,8 +109,7 @@ const updateTask = async (task, newName) => {
   if (!task.id) {
     try {
       const response = await axios.post("/api/todos", { name: newName });
-      task.id = response.data.id;
-      task.text = response.data.name;
+      Object.assign(task, createTaskDTO(response.data));
       showToast("Task created successfully!"); // Show creation toast for new tasks
     } catch (error) {
       console.error("Failed to add task:", error);

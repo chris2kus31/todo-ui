@@ -9,70 +9,13 @@
 import { computed } from "vue";
 import { useTopRowAnalytics } from "~/composables/useTopRowAnalytics";
 import BarChart from "~/components/BarChart.vue";
+import { createAnalyticsDTO, createChartOptionsDTO } from "~/composables/dto/Analytics.dto";
 
 const { analyticsData } = useTopRowAnalytics();
 
-const chartData = computed(() => ({
-  labels: ["Created Tasks", "Completed Tasks"],
-  datasets: [
-    {
-      label: "Number of Tasks",
-      backgroundColor: ["#B2D198", "#F26B5E"],
-      data: [analyticsData.value.created, analyticsData.value.completed],
-    },
-  ],
-}));
+const chartData = computed(() => createAnalyticsDTO(analyticsData.value)); 
+const chartOptions = createChartOptionsDTO();
 
-const chartOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: true,
-      position: "top",
-      labels: {
-        color: "#E5E7EB", // Light gray for readability
-      },
-    },
-    title: {
-      display: true,
-      text: "Overview of Completed and Created Tasks",
-      color: "#FFFFFF", // White color for better readability
-      font: {
-        size: 16,
-        weight: "bold",
-      },
-    },
-  },
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: "Task Status",
-        color: "#E5E7EB", // Light gray for readability
-        font: {
-          size: 14,
-        },
-      },
-      ticks: {
-        color: "#E5E7EB", // Ensures readability of x-axis labels
-      },
-    },
-    y: {
-      title: {
-        display: true,
-        text: "Number of Tasks",
-        color: "#E5E7EB",
-        font: {
-          size: 14,
-        },
-      },
-      ticks: {
-        color: "#E5E7EB",
-        beginAtZero: true, // Ensures y-axis starts at 0
-      },
-    },
-  },
-};
 </script>
 
 <style scoped>
