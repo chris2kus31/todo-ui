@@ -68,7 +68,6 @@ async function markComplete() {
   }
 }
 
-
 const enableEditing = async () => {
   if (!completed.value) {
     isEditing.value = true;
@@ -110,7 +109,6 @@ watch(
     }
   }
 );
-
 </script>
 
 <style scoped>
