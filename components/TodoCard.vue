@@ -3,6 +3,13 @@
   <div class="todo-card">
     <header class="todo-header">
       <h1 class="todo-title">Todo</h1>
+      <input
+        type="text"
+        v-model="newTaskText"
+        @keyup.enter="addTask"
+        placeholder="New task name"
+        class="task-input-field"
+      />
       <button class="add-button" @click="addTask">+</button>
     </header>
 
@@ -15,8 +22,8 @@
       :taskId="task.id"
       @onSave="(newName) => saveTask(task, newName)"
       @cancelTask="() => cancelTask(task)"
-      @onDelete="fetchTasks" 
-      @onComplete="fetchTasks" 
+      @onDelete="fetchTasks"
+      @onComplete="fetchTasks"
     />
   </div>
 </template>
@@ -24,22 +31,24 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import TaskRow from "~/components/TaskRow.vue";
-import { useAxios } from '~/composables/useAxios';
+import { useAxios } from "~/composables/useAxios";
 
 const tasks = ref([]);
 const axios = useAxios();
+const newTaskText = ref("");
+
 let taskIdCounter = 1;
 const savingTask = ref(false);
 async function fetchTasks() {
   try {
-    const response = await axios.get('/api/todos');
+    const response = await axios.get("/api/todos");
     tasks.value = response.data.data
-      .filter(task => task.status === 0) // Only include incomplete tasks
-      .map(task => ({
+      .filter((task) => task.status === 0) // Only include incomplete tasks
+      .map((task) => ({
         id: task.id,
         text: task.name,
         isEditing: false,
-        completed: task.status === 1
+        completed: task.status === 1,
       }));
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -55,17 +64,20 @@ const cancelTask = (task) => {
   }
 };
 
-const addTask = () => {
-  // Create a temporary new task with isEditing set to true
-  const newTask = { id: null, text: "", isEditing: true, completed: false };
-  tasks.value.push(newTask);
-
-  nextTick(() => {
-    const taskRows = document.querySelectorAll(".task-input");
-    if (taskRows.length) {
-      taskRows[taskRows.length - 1].focus();
-    }
-  });
+const addTask = async () => {
+  if (!newTaskText.value.trim()) return;
+  try {
+    const response = await axios.post("/api/todos", { name: newTaskText.value.trim() });
+    tasks.value.push({
+      id: response.data.id,
+      text: response.data.name,
+      isEditing: false,
+      completed: false,
+    });
+    newTaskText.value = ""; // Clear input field after adding task
+  } catch (error) {
+    console.error("Failed to add task:", error);
+  }
 };
 
 const saveTask = async (task, newName) => {
@@ -79,22 +91,24 @@ const saveTask = async (task, newName) => {
 
   if (!task.id) {
     try {
-      const response = await axios.post('/api/todos', { name: newName });
+      const response = await axios.post("/api/todos", { name: newName });
       task.id = response.data.id;
       task.text = response.data.name;
     } catch (error) {
       console.error("Failed to add task:", error);
-      tasks.value = tasks.value.filter((t) => t !== task); 
+      tasks.value = tasks.value.filter((t) => t !== task);
     }
   } else {
     try {
-      await axios.put(`/api/todos/${task.id}`, { name: newName, status: task.completed ? 1 : 0 });
+      await axios.put(`/api/todos/${task.id}`, {
+        name: newName,
+        status: task.completed ? 1 : 0,
+      });
     } catch (error) {
       console.error("Failed to update task:", error);
     }
   }
 };
-
 </script>
 
 <style scoped>
@@ -125,5 +139,15 @@ const saveTask = async (task, newName) => {
 }
 .add-button:hover {
   opacity: 0.9;
+}
+.task-input-field {
+  flex: 1;
+  margin-right: 20px;
+  margin-left: 20px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #f26b5e;
+  color: #fff;
+  background-color: #3d4552;
 }
 </style>

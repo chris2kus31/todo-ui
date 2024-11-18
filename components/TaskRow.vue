@@ -1,11 +1,14 @@
 <!-- components/TaskRow.vue -->
 <template>
   <div class="task-row">
-    <!-- Directly styled checkbox to keep it independent from task text -->
     <div class="task-checkbox-container">
-      <input type="checkbox" class="task-checkbox" v-model="completed" />
+      <input
+        type="checkbox"
+        class="task-checkbox"
+        v-model="completed"
+        @change="markComplete"
+      />
     </div>
-    <!-- Task text, click to edit -->
     <span
       v-if="!isEditing"
       :class="{ 'task-text': true, 'completed-task': completed }"
@@ -14,7 +17,6 @@
       {{ taskName }}
     </span>
 
-    <!-- Input for editing task name -->
     <input
       v-if="isEditing"
       v-model="taskName"
@@ -23,13 +25,8 @@
       @blur="cancelOrSave"
       placeholder="Name your task"
     />
-    <button v-if="completed" @click="completeTask" class="complete-button">
-      Complete
-    </button>
-    <!-- Delete button, visible only when the task is completed -->
-    <button v-if="completed" @click="deleteTask" class="delete-button">
-      Delete
-    </button>
+
+    <button @click="deleteTask" class="trash-button">🗑️</button>
   </div>
 </template>
 
@@ -49,6 +46,19 @@ const completed = ref(false);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
 let saving = false;
+
+async function markComplete() {
+  try {
+    await axios.patch(`/api/todos/${props.taskId}`, {
+      name: taskName.value,
+      status: 1,
+    });
+    completed.value = true;
+    emits("onDelete", props.taskId); // Emit "onDelete" to trigger removal of the completed task in TodoCard
+  } catch (error) {
+    console.error("Failed to mark task as complete:", error);
+  }
+}
 
 async function completeTask() {
   try {
@@ -205,5 +215,17 @@ async function saveName() {
 
 .complete-button:hover {
   background-color: #45a049;
+}
+.trash-button {
+  background: transparent;
+  border: none;
+  color: #f26b5e;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.trash-button:hover {
+  color: #d5584d;
 }
 </style>
