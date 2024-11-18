@@ -10,7 +10,13 @@ const analyticsData = ref({
 export function useTopRowAnalytics() {
   const axios = useAxios();
 
-  async function fetchAnalyticsData(startDate, endDate) {
+  async function fetchAnalyticsData(startDate = new Date(), endDate = null) {
+    // Set endDate to 7 days from startDate if not provided
+    if (!endDate) {
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 7);
+    }
+
     try {
       const response = await axios.get("/api/analytics", {
         params: {

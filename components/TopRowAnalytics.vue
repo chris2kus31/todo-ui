@@ -43,7 +43,7 @@ onMounted(() => {
   margin-bottom: 20px;
 }
 .top-card {
-  background-color: #3d4552;
+  background-color: #4B5563;
   padding: 15px;
   border-radius: 8px;
   flex: 1;

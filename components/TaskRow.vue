@@ -1,11 +1,14 @@
 <!-- components/TaskRow.vue -->
 <template>
   <div class="task-row">
-    <!-- Directly styled checkbox to keep it independent from task text -->
     <div class="task-checkbox-container">
-      <input type="checkbox" class="task-checkbox" v-model="completed" />
+      <input
+        type="checkbox"
+        class="task-checkbox"
+        v-model="completed"
+        @change="markComplete"
+      />
     </div>
-    <!-- Task text, click to edit -->
     <span
       v-if="!isEditing"
       :class="{ 'task-text': true, 'completed-task': completed }"
@@ -14,7 +17,6 @@
       {{ taskName }}
     </span>
 
-    <!-- Input for editing task name -->
     <input
       v-if="isEditing"
       v-model="taskName"
@@ -23,43 +25,46 @@
       @blur="cancelOrSave"
       placeholder="Name your task"
     />
-    <button v-if="completed" @click="completeTask" class="complete-button">
-      Complete
-    </button>
-    <!-- Delete button, visible only when the task is completed -->
-    <button v-if="completed" @click="deleteTask" class="delete-button">
-      Delete
-    </button>
+
+    <TrashIcon class="trash-icon" @click="deleteTask" />
   </div>
 </template>
 
 <script setup>
 import { ref, defineProps, defineEmits, watch } from "vue";
 import { useAxios } from "~/composables/useAxios";
+import { TrashIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
   taskText: { type: String, required: true, default: "" },
   isEditing: { type: Boolean, default: false },
-  taskId: { type: [Number, null], required: true }, // Accepts Number or null
+  taskId: { type: [Number, null], required: true },
+  completed: { type: Boolean, default: false }, // Use prop to initialize completed state
 });
-const axios = useAxios();
-const emits = defineEmits(["onSave", "cancelTask", "onDelete"]);
 
-const completed = ref(false);
+const axios = useAxios();
+const emits = defineEmits([
+  "onSave",
+  "cancelTask",
+  "onDelete",
+  "toggleComplete",
+]);
+
+const completed = ref(props.completed);
 const isEditing = ref(props.isEditing);
 const taskName = ref(props.taskText);
 let saving = false;
 
-async function completeTask() {
+async function markComplete() {
+  const newStatus = props.completed ? 0 : 1; // Toggle based on current completed status
   try {
     await axios.patch(`/api/todos/${props.taskId}`, {
       name: taskName.value,
-      status: 1,
+      status: newStatus,
     });
-    completed.value = true;
-    emits("onDelete", props.taskId); // Emit "onDelete" to trigger removal of the completed task in TodoCard
+    emits("toggleComplete", props.taskId, newStatus); // Emit event with the new status
   } catch (error) {
-    console.error("Failed to complete task:", error);
+    console.error("Failed to update task status:", error);
   }
 }
 
@@ -120,12 +125,6 @@ async function saveName() {
 .task-row:hover {
   background-color: #454e59;
 }
-.task-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
 .task-checkbox-container {
   width: 24px;
   display: flex;
@@ -141,6 +140,7 @@ async function saveName() {
   border-radius: 4px;
   transition: background-color 0.3s ease, border-color 0.3s ease;
   cursor: pointer;
+  position: relative; /* Ensure the pseudo-element positions correctly */
 }
 .task-checkbox:checked {
   background-color: #f26b5e;
@@ -151,19 +151,12 @@ async function saveName() {
   content: "";
   position: absolute;
   left: 3px;
-  top: 1px;
-  width: 6px;
-  height: 10px;
+  bottom: 2px;
+  width: 4px;
+  height: 9px;
   border: solid white;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
-}
-
-.task-text {
-  color: white;
-  font-size: 1em;
-  transition: color 0.3s ease;
-  margin-left: 10px;
 }
 .task-input {
   background-color: #3d4552;
@@ -174,36 +167,24 @@ async function saveName() {
   width: 100%;
   margin-left: 10px;
 }
+.trash-icon {
+  margin-left: auto;
+  color: #f26b5e;
+  width: 1.25em;
+  height: 1.25em;
+  cursor: pointer;
+}
+.trash-icon:hover {
+  color: #d5584d;
+}
+.task-text {
+  color: white;
+  font-size: 1em;
+  transition: color 0.3s ease;
+  margin-left: 10px;
+}
 .completed-task {
   color: #a9a9a9;
   text-decoration: line-through;
-}
-.delete-button {
-  background-color: #f26b5e;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.delete-button:hover {
-  background-color: #d5584d;
-}
-.complete-button {
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.complete-button:hover {
-  background-color: #45a049;
 }
 </style>
